@@ -8,7 +8,7 @@ connectDB();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   },
 });
@@ -33,7 +33,8 @@ io.on("connection", (socket) => {
 app.set("io", io);
 app.set("users", users);
 
-server.listen(3000, () => {
-  console.log("server is running on port : 3000");
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`server is running on port : ${PORT}`);
 });
 

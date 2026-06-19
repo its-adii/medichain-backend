@@ -17,7 +17,7 @@ export function SocketProvider({ children }) {
       return;
     }
 
-    const newSocket = io("http://localhost:3000", {
+    const newSocket = io(import.meta.env.VITE_WS_URL || "http://localhost:3000", {
       withCredentials: true,
     });
 

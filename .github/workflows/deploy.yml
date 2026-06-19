@@ -1,0 +1,46 @@
+name: CI/CD Build Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: medichain-backend/package-lock.json
+      - name: Install dependencies
+        run: |
+          cd medichain-backend
+          npm ci
+      - name: Verify syntax
+        run: |
+          cd medichain-backend
+          node --check server.js
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: medichain-frontend/package-lock.json
+      - name: Install dependencies
+        run: |
+          cd medichain-frontend
+          npm ci
+      - name: Build frontend
+        run: |
+          cd medichain-frontend
+          npm run build
