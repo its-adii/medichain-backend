@@ -217,7 +217,7 @@ function BookAppointment() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="p-8 space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
     >
       <div className="max-w-[1400px] mx-auto">
         
@@ -266,7 +266,7 @@ function BookAppointment() {
                         </span>
                       </div>
                       {idx < 3 && (
-                        <div className={`h-[2px] flex-grow mx-4 transition-all duration-500 ${
+                        <div className={`h-[2px] flex-grow mx-1 sm:mx-4 transition-all duration-500 ${
                           isCompleted ? "bg-emerald-500" : "bg-slate-200"
                         }`} />
                       )}

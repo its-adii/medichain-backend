@@ -1,0 +1,23 @@
+# Responsiveness Implementation Checklist
+
+- `[x]` **Sub-task 1**: Project Analysis & Responsiveness Assessment
+- `[x]` **Sub-task 2**: Navigation Bar (`Navbar.jsx`) Responsiveness
+- `[x]` **Sub-task 3**: Patient Portal Shell (`PatientLayout.jsx`) Responsiveness
+- `[x]` **Sub-task 4**: Patient Portal Pages Responsiveness
+  - `[x]` `Dashboard.jsx` (Welcome block stats card grid, appointments list layout)
+  - `[x]` `Doctors.jsx` (Search inputs layout, specialization filters row)
+  - `[x]` `DoctorProfile.jsx` (Stats summary row)
+  - `[x]` `Appointments.jsx` (Filter strip wrapping, scroll wrapper)
+  - `[x]` `BookAppointment.jsx` (Indicator/stepper layout wrapping)
+  - `[x]` `Billings.jsx` (Billing cards grid, invoice tables wrapper)
+  - `[x]` `Insurance.jsx` (Coverage progress bars, claims table scroll)
+  - `[x]` `MedicalRecords.jsx` (Header action pills wrapping, vault tables)
+  - `[x]` `Support.jsx` (AI chatbot modal overlay resizing, contacts grid)
+- `[x]` **Sub-task 5**: Doctor Dashboard Components Responsiveness
+  - `[x]` `OverviewSection.jsx` (Long horizontal list items stacking)
+  - `[x]` `AppointmentsSection.jsx` (Pagination controls, column widths)
+  - `[x]` `PatientsSection.jsx` (Directory lists, user detail cards)
+- `[x]` **Sub-task 6**: Admin Dashboard Tabs Responsiveness
+  - `[x]` `OverviewTab.jsx` (Registration metrics graphs, tables)
+  - `[x]` `UsersTab.jsx` (Database search and filters wrapping)
+  - `[x]` `DoctorsTab.jsx` & `AppointmentsTab.jsx` (Tables scaling)

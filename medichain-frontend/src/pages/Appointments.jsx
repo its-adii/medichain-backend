@@ -181,7 +181,7 @@ function Appointments() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="p-8 space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
     >
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

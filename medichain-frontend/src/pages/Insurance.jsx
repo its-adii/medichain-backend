@@ -65,7 +65,7 @@ function Insurance() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      className="p-8 space-y-8 max-w-[1400px] mx-auto min-h-screen bg-slate-50"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 max-w-[1400px] mx-auto min-h-screen bg-slate-50"
     >
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -160,7 +160,7 @@ function Insurance() {
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">Recent Insurance Claims</h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
                   <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/50">
                     <th className="py-3 px-4">Claim ID</th>

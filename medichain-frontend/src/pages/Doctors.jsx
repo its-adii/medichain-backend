@@ -101,7 +101,7 @@ function Doctors() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="p-8 space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
     >
       <div className="max-w-[1400px] mx-auto space-y-6">
         
@@ -135,7 +135,7 @@ function Doctors() {
         </div>
 
         {/* 2. Filter Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Specialty Filters */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">

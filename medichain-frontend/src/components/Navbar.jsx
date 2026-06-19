@@ -110,13 +110,13 @@ function Navbar() {
           <div className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-200">
             <ShieldPlus className="text-white" size={24} />
           </div>
-          <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+          <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             Medi<span className="text-cyan-600 dark:text-cyan-500">Chain</span>
           </span>
         </Link>
 
         {/* Desktop Links */}
-        <section className="hidden md:flex items-center gap-8">
+        <section className="hidden md:flex items-center gap-4 lg:gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -139,7 +139,7 @@ function Navbar() {
           <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
 
           {!user ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 lg:gap-4">
               <Link
                 to="/login"
                 className="flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-500 transition group"
@@ -149,7 +149,7 @@ function Navbar() {
               </Link>
               <Link
                 to="/register"
-                className="bg-cyan-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-cyan-600 transition shadow-lg shadow-cyan-100 dark:shadow-none flex items-center gap-1.5 group"
+                className="bg-cyan-500 text-white px-4 py-2 lg:px-5 lg:py-2.5 rounded-xl font-bold text-sm hover:bg-cyan-600 transition shadow-lg shadow-cyan-100 dark:shadow-none flex items-center gap-1.5 group"
               >
                 <UserPlus size={16} className="transition-transform duration-200 group-hover:scale-110" />
                 Join Now
@@ -211,7 +211,7 @@ function Navbar() {
         {/* Mobile Actions */}
         <div className="flex items-center gap-3">
           <button 
-            className="md:hidden p-2 text-slate-600 dark:text-slate-400"
+            className="md:hidden p-2 text-slate-600 dark:text-slate-400 cursor-pointer"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -226,7 +226,7 @@ function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 overflow-hidden shadow-2xl"
+            className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 overflow-hidden shadow-2xl max-h-[calc(100vh-5rem)] overflow-y-auto"
           >
             <div className="px-6 py-8 flex flex-col gap-6">
               {navLinks.map((link) => (
@@ -284,7 +284,7 @@ function Navbar() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-4 text-xl font-bold text-red-600"
+                    className="flex items-center gap-4 text-xl font-bold text-red-600 cursor-pointer"
                   >
                     <div className="p-2 bg-red-50 dark:bg-red-950/20 rounded-lg">
                       <LogOut size={20} />

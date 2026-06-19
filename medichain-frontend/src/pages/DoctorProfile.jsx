@@ -116,9 +116,9 @@ function DoctorProfile() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="min-h-screen bg-slate-50 pt-24 pb-20 transition-colors duration-300"
+      className="min-h-screen bg-slate-50 pt-20 sm:pt-24 pb-16 sm:pb-20 transition-colors duration-300"
     >
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
@@ -151,10 +151,10 @@ function DoctorProfile() {
                   )}
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h1 className={designSystem.typography.pageTitle}>
+                      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-none">
                         {doctor.user?.name ? (doctor.user.name.toLowerCase().startsWith("dr.") ? doctor.user.name : `Dr. ${doctor.user.name}`) : "Doctor Profile"}
                       </h1>
                       <div className="flex items-center gap-1.5 text-cyan-600 font-bold mt-1 text-sm tracking-wide uppercase">
@@ -169,16 +169,16 @@ function DoctorProfile() {
                   </div>
 
                   {/* Stats row */}
-                  <div className="mt-6 grid grid-cols-3 gap-4">
+                  <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
                     {[
                       { icon: User, label: "Experience", value: `${doctor.experience} yrs` },
                       { icon: IndianRupee, label: "Fees", value: `₹${doctor.fees}` },
                       { icon: ShieldCheck, label: "Status", value: doctor.isVerified ? "Verified" : "Pending", green: doctor.isVerified },
                     ].map(({ icon: Icon, label, value, green }) => (
-                      <div key={label} className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 text-center">
-                        <Icon size={18} className={`mx-auto mb-1 ${green === true ? "text-emerald-500" : green === false ? "text-amber-500" : "text-cyan-600"}`} />
-                        <p className={designSystem.typography.label}>{label}</p>
-                        <p className={`font-bold text-sm mt-0.5 ${green === true ? "text-emerald-600" : green === false ? "text-amber-600" : "text-slate-900"}`}>{value}</p>
+                      <div key={label} className="bg-slate-50 border border-slate-100 rounded-xl p-2 sm:p-3.5 text-center">
+                        <Icon size={16} className={`mx-auto mb-1 ${green === true ? "text-emerald-500" : green === false ? "text-amber-500" : "text-cyan-600"}`} />
+                        <p className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-slate-500 block mb-0.5 sm:mb-1.5">{label}</p>
+                        <p className={`font-bold text-xs sm:text-sm mt-0.5 ${green === true ? "text-emerald-600" : green === false ? "text-amber-600" : "text-slate-900"}`}>{value}</p>
                       </div>
                     ))}
                   </div>

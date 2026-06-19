@@ -40,10 +40,10 @@ function PatientsSection({ uniquePatients, selectedPatient, setSelectedPatient }
             Managing {uniquePatients.length} active patient records under your care.
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 w-full md:w-auto">
           <button
             onClick={() => setSelectedPatient(null)}
-            className={designSystem.components.buttonOutline}
+            className={`${designSystem.components.buttonOutline} w-full md:w-auto justify-center`}
           >
             Reset Preview
           </button>
@@ -64,7 +64,7 @@ function PatientsSection({ uniquePatients, selectedPatient, setSelectedPatient }
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[650px]">
                   <thead>
                     <tr className={designSystem.components.tableHeaderRow}>
                       <th className="px-6 py-4 font-bold text-xs">Patient Name</th>
@@ -164,7 +164,7 @@ function PatientsSection({ uniquePatients, selectedPatient, setSelectedPatient }
         {/* Right Column: preview sidebar card */}
         <div className="col-span-12 lg:col-span-4">
           {selectedPatient ? (
-            <div className={`${designSystem.components.card} sticky top-[100px] transition-all bg-white`}>
+            <div className={`${designSystem.components.card} lg:sticky lg:top-[100px] transition-all bg-white`}>
               <div className="flex flex-col items-center text-center">
                 <div className="w-20 h-20 rounded-full bg-slate-100 border-4 border-slate-200 flex items-center justify-center text-cyan-600 font-bold text-2xl mb-4 shrink-0 shadow-sm">
                   {selectedPatient.name
@@ -245,7 +245,7 @@ function PatientsSection({ uniquePatients, selectedPatient, setSelectedPatient }
               </div>
             </div>
           ) : (
-            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-500 py-24 sticky top-[100px] shadow-sm">
+            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-500 py-24 lg:sticky lg:top-[100px] shadow-sm">
               <Search className="w-8 h-8 mx-auto mb-4 text-slate-300 animate-pulse" />
               <p className="font-bold text-slate-700 text-sm">Select a Patient</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">

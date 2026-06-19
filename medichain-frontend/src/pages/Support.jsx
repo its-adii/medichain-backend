@@ -72,7 +72,7 @@ function Support() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      className="p-8 space-y-8 max-w-[1400px] mx-auto min-h-screen bg-slate-50"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 max-w-[1400px] mx-auto min-h-screen bg-slate-50"
     >
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -90,44 +90,44 @@ function Support() {
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Support Channels</h3>
             
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-3">
               <button 
                 onClick={() => setShowChat(true)}
                 className="w-full flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-left"
               >
-                <div className="flex items-center gap-3 text-xs font-bold text-slate-800">
-                  <div className="w-9 h-9 bg-cyan-50 text-cyan-600 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-3 text-xs font-bold text-slate-800 min-w-0">
+                  <div className="w-9 h-9 bg-cyan-50 text-cyan-600 rounded-lg flex items-center justify-center shrink-0">
                     <MessageSquare size={16} />
                   </div>
-                  Live Assistant Chat
+                  <span className="truncate">Live Assistant Chat</span>
                 </div>
-                <ChevronRight size={14} className="text-slate-400" />
+                <ChevronRight size={14} className="text-slate-400 shrink-0" />
               </button>
 
               <a 
                 href="tel:+18005550199"
                 className="w-full flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-3 text-xs font-bold text-slate-800">
-                  <div className="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-3 text-xs font-bold text-slate-800 min-w-0">
+                  <div className="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shrink-0">
                     <Phone size={16} />
                   </div>
-                  1-800-555-0199
+                  <span className="truncate">1-800-555-0199</span>
                 </div>
-                <ChevronRight size={14} className="text-slate-400" />
+                <ChevronRight size={14} className="text-slate-400 shrink-0" />
               </a>
 
               <a 
                 href="mailto:support@medichain.com"
                 className="w-full flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-3 text-xs font-bold text-slate-800">
-                  <div className="w-9 h-9 bg-[#e0f7fc] text-cyan-600 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-3 text-xs font-bold text-slate-800 min-w-0">
+                  <div className="w-9 h-9 bg-[#e0f7fc] text-cyan-600 rounded-lg flex items-center justify-center shrink-0">
                     <Mail size={16} />
                   </div>
-                  support@medichain.com
+                  <span className="truncate">support@medichain.com</span>
                 </div>
-                <ChevronRight size={14} className="text-slate-400" />
+                <ChevronRight size={14} className="text-slate-400 shrink-0" />
               </a>
             </div>
 

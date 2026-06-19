@@ -106,20 +106,20 @@ export default function DoctorsTab({
           <h2 className={designSystem.typography.pageTitle}>Doctor Verification</h2>
           <p className="text-slate-500 text-sm mt-1 font-medium">Review and manage professional credentials for healthcare providers.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:gap-3 shrink-0">
           <button
             onClick={() => setShowDoctorFilters((value) => !value)}
-            className={`${designSystem.components.buttonOutline} px-3.5 py-2 text-xs gap-1.5`}
+            className={`${designSystem.components.buttonOutline} px-3.5 py-2 text-xs gap-1.5 w-full sm:w-auto justify-center`}
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 transition-transform duration-200 hover:rotate-12" />
-            Filter
+            <SlidersHorizontal className="w-3.5 h-3.5 transition-transform duration-200 hover:rotate-12 shrink-0" />
+            <span>Filter</span>
           </button>
           <button
             onClick={() => { setNewUserRole("doctor"); setAddUserError(""); setIsAddUserModalOpen(true); }}
-            className={`${designSystem.components.buttonPrimary} px-3.5 py-2 text-xs gap-1.5`}
+            className={`${designSystem.components.buttonPrimary} px-3.5 py-2 text-xs gap-1.5 w-full sm:w-auto justify-center`}
           >
-            <Plus className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-115" />
-            Register New Doctor
+            <Plus className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-115 shrink-0" />
+            <span>Register New Doctor</span>
           </button>
         </div>
       </div>
@@ -176,13 +176,13 @@ export default function DoctorsTab({
       </div>
 
       {showDoctorFilters && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-wrap items-end gap-4">
-          <div className="space-y-1.5">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col sm:flex-row sm:items-end gap-4">
+          <div className="space-y-1.5 w-full sm:w-auto">
             <label className={designSystem.typography.label}>Credential Status</label>
             <select
               value={doctorStatusFilter}
               onChange={(e) => setDoctorStatusFilter(e.target.value)}
-              className="min-w-40 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-500 cursor-pointer"
+              className="w-full sm:w-auto sm:min-w-40 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-500 cursor-pointer"
             >
               <option value="All">All statuses</option>
               <option value="Pending">Pending only</option>
@@ -196,7 +196,7 @@ export default function DoctorsTab({
               setDoctorStatusFilter("All");
               setDoctorSearch("");
             }}
-            className={`${designSystem.components.buttonOutline} px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl hover:bg-slate-50 shadow-sm`}
+            className={`${designSystem.components.buttonOutline} px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl hover:bg-slate-50 shadow-sm w-full sm:w-auto justify-center`}
           >
             Clear Filters
           </button>
@@ -214,7 +214,7 @@ export default function DoctorsTab({
         </div>
 
         <div className="overflow-x-auto">
-          <table className={designSystem.components.table}>
+          <table className={`${designSystem.components.table} min-w-[750px]`}>
             <thead>
               <tr className={designSystem.components.tableHeaderRow}>
                 <th className="px-6 py-4">Doctor Name</th>
@@ -460,12 +460,12 @@ export default function DoctorsTab({
                 </div>
               </div>
 
-              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex flex-wrap justify-end gap-3">
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => handleToggleFlag(selectedDoctor)}
                   disabled={flaggingId === selectedDoctor._id}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer border flex items-center gap-1.5 group ${
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer border flex items-center justify-center gap-1.5 group w-full sm:w-auto ${
                     selectedDoctor.isFlagged
                       ? "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
                       : "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100"
@@ -474,7 +474,7 @@ export default function DoctorsTab({
                   {flaggingId === selectedDoctor._id ? (
                     <Loader2 size={12} className="animate-spin" />
                   ) : (
-                    <AlertTriangle size={12} className="group-hover:scale-110 transition-transform duration-200" />
+                    <AlertTriangle size={12} className="group-hover:scale-110 transition-transform duration-200 shrink-0" />
                   )}
                   {flaggingId === selectedDoctor._id ? "Updating..." : selectedDoctor.isFlagged ? "Clear Flag" : "Flag Credentials"}
                 </button>
@@ -482,12 +482,12 @@ export default function DoctorsTab({
                   type="button"
                   onClick={() => handleToggleVerify(selectedDoctor)}
                   disabled={verifyingId === selectedDoctor._id}
-                  className={`${designSystem.components.buttonPrimary} px-5 py-2 text-xs flex items-center gap-1.5 group`}
+                  className={`${designSystem.components.buttonPrimary} px-5 py-2 text-xs flex items-center justify-center gap-1.5 group w-full sm:w-auto`}
                 >
                   {verifyingId === selectedDoctor._id ? (
                     <Loader2 size={12} className="animate-spin" />
                   ) : (
-                    <BadgeCheck size={14} className="group-hover:scale-110 transition-transform duration-200" />
+                    <BadgeCheck size={14} className="group-hover:scale-110 transition-transform duration-200 shrink-0" />
                   )}
                   {verifyingId === selectedDoctor._id ? "Updating..." : selectedDoctor.isVerified ? "Mark Pending" : "Verify Doctor"}
                 </button>

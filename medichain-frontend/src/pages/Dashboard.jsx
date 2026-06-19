@@ -231,12 +231,12 @@ function Dashboard() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="p-8 space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 bg-slate-50 transition-colors duration-300 min-h-screen"
     >
       <div className="max-w-[1400px] mx-auto">
         
         {/* Welcome Header Section */}
-        <section className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <section className="mb-6 md:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">
               Good morning, {user?.name || "Patient"}
@@ -246,7 +246,7 @@ function Dashboard() {
             </p>
           </div>
           
-          <div className="flex gap-4">
+          <div className="grid grid-cols-2 gap-3 w-full sm:w-auto sm:flex sm:gap-4">
             <div className="flex flex-col items-center justify-center bg-white border border-slate-200 px-6 py-4 rounded-2xl shadow-sm min-w-[120px] group hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-1.5">
                 <Activity size={18} className="text-cyan-600 group-hover:scale-110 transition-transform duration-200" />
@@ -289,7 +289,7 @@ function Dashboard() {
                   <Calendar className="text-cyan-600" size={20} />
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Upcoming Appointments</h3>
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex flex-wrap gap-2 items-center">
                   <Link to="/appointments" className="text-xs text-cyan-600 font-bold hover:underline mr-2">
                     View Calendar
                   </Link>
@@ -367,36 +367,38 @@ function Dashboard() {
                     return (
                       <div
                         key={appt._id}
-                        className="flex items-center gap-4 p-4 hover:bg-slate-50 border border-slate-100 hover:border-slate-205 rounded-xl transition-all duration-200 group"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-slate-50 border border-slate-100 hover:border-slate-205 rounded-xl transition-all duration-200 group"
                       >
-                        {/* Date Pill */}
-                        <div className="flex flex-col items-center justify-center min-w-[64px] h-[64px] bg-cyan-50 border border-cyan-100 text-cyan-600 rounded-xl font-bold shrink-0">
-                          <span className="text-xl leading-none">{dateParts.day}</span>
-                          <span className="text-[10px] tracking-wider uppercase mt-1">{dateParts.month}</span>
-                        </div>
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          {/* Date Pill */}
+                          <div className="flex flex-col items-center justify-center min-w-[64px] h-[64px] bg-cyan-50 border border-cyan-100 text-cyan-600 rounded-xl font-bold shrink-0">
+                            <span className="text-xl leading-none">{dateParts.day}</span>
+                            <span className="text-[10px] tracking-wider uppercase mt-1">{dateParts.month}</span>
+                          </div>
 
-                        {/* Doctor Info */}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-bold text-slate-900 text-sm truncate">
-                            {appt.doctor?.user?.name 
-                              ? (appt.doctor.user.name.toLowerCase().startsWith("dr.") ? appt.doctor.user.name : `Dr. ${appt.doctor.user.name}`) 
-                              : "Specialist"}
-                          </p>
-                          <p className="text-xs text-cyan-600 font-bold flex items-center gap-1 mt-0.5">
-                            <Stethoscope size={12} />
-                            {appt.doctor?.specialization || "General Medicine"}
-                          </p>
-                          <div className="flex items-center gap-2 mt-1.5 text-[11px] text-slate-400 font-semibold">
-                            <span className="flex items-center gap-1">
-                              <Clock size={11} /> {appt.time}
-                            </span>
-                            <span>•</span>
-                            <span className="truncate">{appt.reason}</span>
+                          {/* Doctor Info */}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-slate-900 text-sm truncate">
+                              {appt.doctor?.user?.name 
+                                ? (appt.doctor.user.name.toLowerCase().startsWith("dr.") ? appt.doctor.user.name : `Dr. ${appt.doctor.user.name}`) 
+                                : "Specialist"}
+                            </p>
+                            <p className="text-xs text-cyan-600 font-bold flex items-center gap-1 mt-0.5">
+                              <Stethoscope size={12} />
+                              {appt.doctor?.specialization || "General Medicine"}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1.5 text-[11px] text-slate-400 font-semibold">
+                              <span className="flex items-center gap-1">
+                                <Clock size={11} /> {appt.time}
+                              </span>
+                              <span>•</span>
+                              <span className="truncate">{appt.reason}</span>
+                            </div>
                           </div>
                         </div>
 
                         {/* Status & Actions */}
-                        <div className="flex flex-col items-end gap-2 shrink-0">
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 shrink-0 border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0">
                           <span className={`${designSystem.components.badge} ${style.bg} ${style.text} ${style.border}`}>
                             {style.label}
                           </span>

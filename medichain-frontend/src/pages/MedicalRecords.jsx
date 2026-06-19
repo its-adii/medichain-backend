@@ -242,7 +242,7 @@ function MedicalRecords() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="p-8 space-y-8 max-w-[1400px] mx-auto min-h-screen bg-slate-50"
+      className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 max-w-[1400px] mx-auto min-h-screen bg-slate-50"
     >
       
       {/* Page Header */}
@@ -255,20 +255,20 @@ function MedicalRecords() {
             Your secure healthcare vault. Access and manage your full clinical history.
           </p>
         </div>
-        <div className="flex gap-3 shrink-0">
+        <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:gap-3 shrink-0">
           <button 
             onClick={() => setShowUploadModal(true)}
-            className="flex items-center gap-2 px-5 py-3 bg-cyan-600 hover:bg-cyan-700 active:scale-[0.98] text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-600/10 transition-all cursor-pointer"
+            className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 bg-cyan-600 hover:bg-cyan-700 active:scale-[0.98] text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-600/10 transition-all cursor-pointer"
           >
             <Upload size={14} className="stroke-[3]" />
-            Upload New Record
+            Upload Record
           </button>
           <button 
             onClick={() => setShowExportModal(true)}
-            className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-705 font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-705 font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer"
           >
             <Download size={14} />
-            Export PDF Report
+            Export PDF
           </button>
         </div>
       </div>
@@ -334,7 +334,7 @@ function MedicalRecords() {
 
             {/* Table Container */}
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse min-w-[650px]">
                 <thead>
                   <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/50">
                     <th className="py-3 px-4">Record Description</th>
@@ -450,18 +450,18 @@ function MedicalRecords() {
                 </p>
               </div>
             </div>
-            <div className="flex gap-4 relative z-10 shrink-0">
+            <div className="grid grid-cols-2 gap-2 w-full md:w-auto md:flex md:gap-4 relative z-10 shrink-0">
               <button 
                 onClick={() => alert("Verification: MediChain credentials are fully synced with state registries.")}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold text-[10px] rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold text-[10px] rounded-lg transition-colors cursor-pointer text-center flex items-center justify-center"
               >
                 HIPAA Credentials
               </button>
               <button 
                 onClick={() => alert("Blockchain integrity verification completed: All hashes match.")}
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-[10px] rounded-lg shadow-sm transition-colors cursor-pointer"
+                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-[10px] rounded-lg shadow-sm transition-colors cursor-pointer text-center flex items-center justify-center"
               >
-                Verify Blockchain Logs
+                Verify Blockchain
               </button>
             </div>
           </div>

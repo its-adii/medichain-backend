@@ -295,10 +295,10 @@ function PatientLayout() {
       <div className="flex-1 md:pl-[280px] flex flex-col min-h-screen">
         
         {/* Top Header sub-navbar */}
-        <header className="sticky top-0 z-40 bg-white border-b border-slate-200 h-20 flex items-center justify-between px-6 md:px-8">
+        <header className="sticky top-0 z-40 bg-white border-b border-slate-200 h-20 flex items-center justify-between px-4 sm:px-6 md:px-8">
           
           {/* Left Navigation Tabs (Stitch Top Header links) */}
-          <div className="flex items-center gap-4 md:gap-8 h-full">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-8 h-full">
             <button
               onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
               className="p-2 -ml-2 rounded-xl text-slate-600 hover:bg-slate-50 md:hidden cursor-pointer flex items-center justify-center"
@@ -309,7 +309,7 @@ function PatientLayout() {
             <span className="text-lg md:text-xl font-black tracking-tight text-slate-900 mr-2 uppercase shrink-0">
               MediChain
             </span>
-            <div className="hidden md:flex items-center gap-6 h-full">
+            <div className="hidden lg:flex items-center gap-4 xl:gap-6 h-full">
               {headerLinks.map((link) => {
                 const active = isHeaderActive(link.path);
                 return (
@@ -335,7 +335,7 @@ function PatientLayout() {
           </div>
 
           {/* Right Header controls: search, notification, settings, avatar */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
             
             {/* Search Input bar (records/history searching indicator) */}
             <div className="relative w-64 group hidden sm:block">
@@ -481,10 +481,10 @@ function PatientLayout() {
               </div>
 
               {/* Modal Form Scrollable */}
-              <form onSubmit={handleSettingsSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+              <form onSubmit={handleSettingsSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
                 
                 {/* Profile Picture Upload Section */}
-                <div className="flex flex-col items-center gap-4 border-b border-slate-100 pb-6">
+                <div className="flex flex-col items-center gap-4 border-b border-slate-100 pb-4 sm:pb-6">
                   <div className="relative group shrink-0">
                     <Avatar 
                       src={settingsImagePreview} 

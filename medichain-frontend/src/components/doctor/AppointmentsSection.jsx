@@ -99,13 +99,13 @@ function AppointmentsSection({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full md:w-auto">
           <button
             onClick={() => alert("Exporting appointment logs as CSV...")}
-            className={designSystem.components.buttonOutline}
+            className={`${designSystem.components.buttonOutline} w-full md:w-auto justify-center`}
           >
-            <Download className="w-4 h-4 text-slate-700" />
-            Export List
+            <Download className="w-4 h-4 text-slate-700 shrink-0" />
+            <span>Export List</span>
           </button>
         </div>
       </header>
@@ -114,8 +114,8 @@ function AppointmentsSection({
         {/* Left Column: list table */}
         <div className="col-span-12 lg:col-span-8 space-y-4">
           {/* Filters band */}
-          <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-sm">
-            <div className="flex gap-1 overflow-x-auto pb-1 no-scrollbar">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-sm">
+            <div className="w-full lg:w-auto flex gap-1 overflow-x-auto pb-1 no-scrollbar">
               {APPOINTMENT_TABS.map((tab) => (
                 <button
                   key={tab}
@@ -131,16 +131,16 @@ function AppointmentsSection({
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full lg:w-auto">
               {/* Search Bar */}
-              <div className="relative">
+              <div className="relative w-full sm:w-auto">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Search patient..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-8 py-1.5 bg-slate-50 border border-slate-200 rounded-full text-xs font-semibold focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 w-44 transition-all outline-none"
+                  className="pl-9 pr-8 py-1.5 bg-slate-50 border border-slate-200 rounded-full text-xs font-semibold focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 w-full sm:w-44 transition-all outline-none"
                 />
                 {searchQuery && (
                   <button
@@ -153,33 +153,35 @@ function AppointmentsSection({
                 )}
               </div>
 
-              {/* Date Filter */}
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-200 rounded-full text-slate-600">
-                <CalendarDays className="w-3.5 h-3.5 text-slate-400" />
-                <input
-                  type="date"
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                  className="bg-transparent border-none p-0 text-xs font-semibold outline-none cursor-pointer focus:ring-0 w-24 text-cyan-600"
-                />
-                {dateFilter && (
-                  <button onClick={() => setDateFilter("")} className="text-slate-400 hover:text-rose-600 cursor-pointer active:scale-90 transition-transform" title="Clear Date">
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                {/* Date Filter */}
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-200 rounded-full text-slate-600">
+                  <CalendarDays className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <input
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="bg-transparent border-none p-0 text-xs font-semibold outline-none cursor-pointer focus:ring-0 w-24 text-cyan-600"
+                  />
+                  {dateFilter && (
+                    <button onClick={() => setDateFilter("")} className="text-slate-400 hover:text-rose-600 cursor-pointer active:scale-90 transition-transform shrink-0" title="Clear Date">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
 
-              {/* Sort Order */}
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-semibold text-slate-500">Sort:</span>
-                <select
-                  value={apptSortOrder}
-                  onChange={(e) => setApptSortOrder(e.target.value)}
-                  className="bg-transparent border-none text-xs font-bold text-cyan-600 focus:ring-0 cursor-pointer outline-none py-0 pl-1 pr-6"
-                >
-                  <option value="upcoming">Upcoming</option>
-                  <option value="recent">Recent</option>
-                </select>
+                {/* Sort Order */}
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-semibold text-slate-500">Sort:</span>
+                  <select
+                    value={apptSortOrder}
+                    onChange={(e) => setApptSortOrder(e.target.value)}
+                    className="bg-transparent border-none text-xs font-bold text-cyan-600 focus:ring-0 cursor-pointer outline-none py-0 pl-1 pr-6"
+                  >
+                    <option value="upcoming">Upcoming</option>
+                    <option value="recent">Recent</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -229,7 +231,7 @@ function AppointmentsSection({
               </div>
             ) : (
               <div className="overflow-x-auto bg-white">
-                <table className="w-full text-left border-collapse table-fixed">
+                <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
                   <thead>
                     <tr className={designSystem.components.tableHeaderRow}>
                       <th className="px-4 py-3.5 w-[24%] font-bold text-xs">Patient</th>

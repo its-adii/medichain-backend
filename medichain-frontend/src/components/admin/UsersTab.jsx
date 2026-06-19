@@ -168,13 +168,13 @@ export default function UsersTab({
           <h2 className={designSystem.typography.pageTitle}>User Management</h2>
           <p className="text-slate-500 text-sm mt-1 font-medium">Monitor and control access for all patients and medical staff.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:gap-3 shrink-0">
           <button
             onClick={exportUsersCSV}
-            className={`${designSystem.components.buttonOutline} px-3.5 py-2 text-xs gap-1.5`}
+            className={`${designSystem.components.buttonOutline} px-3.5 py-2 text-xs gap-1.5 w-full sm:w-auto justify-center`}
           >
-            <Download className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-110" />
-            Export Data
+            <Download className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-110 shrink-0" />
+            <span>Export Data</span>
           </button>
           <button 
             onClick={() => { 
@@ -182,10 +182,10 @@ export default function UsersTab({
               setAddUserError(""); 
               setIsAddUserModalOpen(true); 
             }} 
-            className={`${designSystem.components.buttonPrimary} px-3.5 py-2 text-xs gap-1.5`}
+            className={`${designSystem.components.buttonPrimary} px-3.5 py-2 text-xs gap-1.5 w-full sm:w-auto justify-center`}
           >
-            <UserPlus className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-110" />
-            Add New User
+            <UserPlus className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-110 shrink-0" />
+            <span>Add New User</span>
           </button>
         </div>
       </div>
@@ -264,7 +264,7 @@ export default function UsersTab({
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className={designSystem.components.table}>
+          <table className={`${designSystem.components.table} min-w-[650px]`}>
             <thead>
               <tr className={designSystem.components.tableHeaderRow}>
                 <th className="px-6 py-4 text-left">

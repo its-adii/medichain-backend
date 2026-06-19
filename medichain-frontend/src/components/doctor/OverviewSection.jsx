@@ -269,20 +269,20 @@ function OverviewSection({
             )}
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:gap-3 shrink-0">
           <button
             onClick={downloadDailyReport}
-            className={designSystem.components.buttonOutline}
+            className={`${designSystem.components.buttonOutline} justify-center w-full sm:w-auto`}
           >
-            <Download className="w-4 h-4 text-slate-700" />
-            Daily Report
+            <Download className="w-4 h-4 text-slate-700 shrink-0" />
+            <span>Daily Report</span>
           </button>
           <button
             onClick={() => setActiveSection("appointments")}
-            className={designSystem.components.buttonPrimary}
+            className={`${designSystem.components.buttonPrimary} justify-center w-full sm:w-auto`}
           >
-            <Plus className="w-4 h-4 text-white" />
-            New Appointment
+            <Plus className="w-4 h-4 text-white shrink-0" />
+            <span>New Appointment</span>
           </button>
         </div>
       </div>
@@ -403,9 +403,9 @@ function OverviewSection({
           </div>
 
           {showFilters && (
-            <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-4 animate-fadeIn">
+            <div className="px-4 sm:px-6 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 animate-fadeIn">
               {/* Search bar */}
-              <div className="relative flex-1 min-w-[200px]">
+              <div className="relative w-full sm:flex-1 sm:min-w-[200px]">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
@@ -424,42 +424,44 @@ function OverviewSection({
                 )}
               </div>
 
-              {/* Status filter */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-semibold text-slate-500">Status:</span>
-                <select
-                  value={scheduleStatus}
-                  onChange={(e) => handleStatusFilterChange(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-full text-xs font-semibold text-cyan-600 focus:ring-0 cursor-pointer outline-none py-1.5 pl-3 pr-8"
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </div>
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                {/* Status filter */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-500">Status:</span>
+                  <select
+                    value={scheduleStatus}
+                    onChange={(e) => handleStatusFilterChange(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-full text-xs font-semibold text-cyan-600 focus:ring-0 cursor-pointer outline-none py-1.5 pl-3 pr-8"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
 
-              {/* Date Scope custom input */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500">Filter Date:</span>
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-full text-slate-600">
-                  <CalendarDays className="w-4 h-4 text-slate-400" />
-                  <input
-                    type="date"
-                    value={scheduleDate}
-                    onChange={(e) => handleDateFilterChange(e.target.value)}
-                    className="bg-transparent border-none p-0 text-xs font-semibold outline-none cursor-pointer focus:ring-0 w-28 text-cyan-600"
-                  />
-                  {scheduleDate && (
-                    <button
-                      onClick={() => handleDateFilterChange("")}
-                      className="text-slate-400 hover:text-rose-600 cursor-pointer flex items-center active:scale-90 transition-transform"
-                      title="Clear Date Filter"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                {/* Date Scope custom input */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-500">Filter Date:</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-full text-slate-600">
+                    <CalendarDays className="w-4 h-4 text-slate-400" />
+                    <input
+                      type="date"
+                      value={scheduleDate}
+                      onChange={(e) => handleDateFilterChange(e.target.value)}
+                      className="bg-transparent border-none p-0 text-xs font-semibold outline-none cursor-pointer focus:ring-0 w-28 text-cyan-600"
+                    />
+                    {scheduleDate && (
+                      <button
+                        onClick={() => handleDateFilterChange("")}
+                        className="text-slate-400 hover:text-rose-600 cursor-pointer flex items-center active:scale-90 transition-transform"
+                        title="Clear Date Filter"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -514,8 +516,8 @@ function OverviewSection({
                   }
 
                   return (
-                    <div key={appt._id} className="flex gap-6 group">
-                      <div className="w-20 pt-2 flex flex-col shrink-0">
+                    <div key={appt._id} className="flex gap-3 sm:gap-6 group">
+                      <div className="w-16 sm:w-20 pt-2 flex flex-col shrink-0">
                         <span
                           className={`text-xs font-bold leading-none ${
                             statusLabel === "In-Progress" ? "text-cyan-600" : "text-slate-700"
@@ -530,15 +532,15 @@ function OverviewSection({
                         </span>
                       </div>
                       <div
-                        className={`flex-1 flex items-center justify-between p-4 bg-slate-50 rounded-xl border-l-4 ${borderAccent} ${
+                        className={`flex-1 flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 rounded-xl border-l-4 ${borderAccent} ${
                           statusLabel === "In-Progress"
                             ? "ring-2 ring-cyan-500/10 bg-cyan-50/20"
                             : "group-hover:bg-slate-100/70"
-                        } transition-all`}
+                        } transition-all gap-3 sm:gap-4`}
                       >
                         <div className="flex items-center gap-4">
                           <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
+                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
                               statusLabel === "In-Progress"
                                 ? "bg-cyan-500 text-white"
                                 : "bg-slate-200 text-slate-700"
@@ -555,8 +557,8 @@ function OverviewSection({
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-8">
-                          <span className={`${designSystem.components.badge} ${badgeStyle}`}>
+                        <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-8 w-full sm:w-auto border-t border-slate-100 sm:border-t-0 pt-2 sm:pt-0">
+                          <span className={`${designSystem.components.badge} ${badgeStyle} shrink-0`}>
                             {statusLabel}
                           </span>
 
@@ -653,7 +655,7 @@ function OverviewSection({
           {/* Quick actions */}
           <div className={designSystem.components.card}>
             <h3 className="text-sm font-bold text-slate-900 mb-6">Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-4">
               <button
                 onClick={() => {
                   setActiveSection("profile");

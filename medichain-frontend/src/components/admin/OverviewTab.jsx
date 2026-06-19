@@ -200,7 +200,7 @@ export default function OverviewTab({
             </button>
           </div>
           <div className="overflow-x-auto">
-            <table className={designSystem.components.table}>
+            <table className={`${designSystem.components.table} min-w-[600px]`}>
               <thead>
                 <tr className={designSystem.components.tableHeaderRow}>
                   <th className="px-6 py-3 text-left">USER</th>
@@ -262,7 +262,7 @@ export default function OverviewTab({
         <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between">
           <div>
             <h4 className="text-sm font-bold text-slate-900 mb-4">Quick Actions</h4>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
               <button
                 onClick={() => setActiveTab("doctors")}
                 className="w-full flex items-center justify-between p-3.5 border border-slate-200 hover:bg-slate-50/85 hover:border-slate-300 rounded-xl transition duration-150 group cursor-pointer bg-white shadow-sm"
@@ -273,10 +273,10 @@ export default function OverviewTab({
                   </div>
                   <div className="text-left">
                     <p className="font-bold text-xs text-slate-900">Verify Doctor</p>
-                    <p className="text-[10px] text-slate-500 font-semibold">{doctors.filter(d => !d.isVerified).length} applications pending</p>
+                    <p className="text-[10px] text-slate-500 font-semibold">{doctors.filter(d => !d.isVerified).length} pending</p>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform shrink-0" />
               </button>
 
               <button
@@ -292,7 +292,7 @@ export default function OverviewTab({
                     <p className="text-[10px] text-slate-500 font-semibold">Last backup 6h ago</p>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform shrink-0" />
               </button>
 
               <button
@@ -308,18 +308,18 @@ export default function OverviewTab({
                     <p className="text-[10px] text-slate-500 font-semibold">Check blockchain integrity</p>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform shrink-0" />
               </button>
             </div>
           </div>
 
-          <div className="mt-4">
-            <button className={`${designSystem.components.buttonPrimary} w-full py-2.5 text-xs mb-4`}>
-              <FileText className="w-4 h-4 transition-transform duration-200 hover:scale-110" />
-              Generate Audit Report
+          <div className="mt-4 flex flex-col sm:flex-row lg:flex-col gap-4">
+            <button className={`${designSystem.components.buttonPrimary} w-full py-2.5 text-xs justify-center`}>
+              <FileText className="w-4 h-4 transition-transform duration-200 hover:scale-110 shrink-0" />
+              <span>Generate Audit Report</span>
             </button>
             
-            <div className="relative rounded-xl overflow-hidden h-28 group cursor-pointer border border-slate-200 shadow-sm">
+            <div className="relative rounded-xl overflow-hidden h-28 sm:h-auto sm:aspect-video lg:h-28 w-full group cursor-pointer border border-slate-200 shadow-sm">
               <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Security Center" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=400&h=200" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent p-4 flex flex-col justify-end">
                 <p className="text-white font-bold text-xs">Security Compliance</p>

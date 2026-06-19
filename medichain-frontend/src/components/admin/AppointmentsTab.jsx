@@ -157,49 +157,51 @@ export default function AppointmentsTab({
           <h2 className={designSystem.typography.pageTitle}>Appointment Management</h2>
           <p className="text-slate-500 text-sm mt-1 font-medium font-sans">Track and manage upcoming clinical sessions and patient history.</p>
         </div>
-         <div className="flex items-center gap-3">
+        <div className="grid grid-cols-1 sm:flex sm:items-center sm:gap-3 gap-2 w-full sm:w-auto shrink-0">
           {showClearHistoryConfirm ? (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 border border-rose-200 bg-rose-50 rounded-xl text-xs font-bold transition">
-              <span className="text-rose-650 text-rose-600">Permanently clear history?</span>
-              <button
-                onClick={async () => {
-                  await handleClearHistory();
-                  setShowClearHistoryConfirm(false);
-                }}
-                disabled={clearingHistory}
-                className="px-2 py-0.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold transition cursor-pointer flex items-center justify-center min-w-[28px] h-5"
-              >
-                {clearingHistory ? <Loader2 size={10} className="animate-spin inline" /> : "Yes"}
-              </button>
-              <button
-                onClick={() => setShowClearHistoryConfirm(false)}
-                className="px-2 py-0.5 border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold transition cursor-pointer h-5 flex items-center justify-center"
-              >
-                No
-              </button>
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 px-3 py-1.5 border border-rose-200 bg-rose-50 rounded-xl text-xs font-bold transition w-full sm:w-auto">
+              <span className="text-rose-655 text-rose-600">Permanently clear history?</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={async () => {
+                    await handleClearHistory();
+                    setShowClearHistoryConfirm(false);
+                  }}
+                  disabled={clearingHistory}
+                  className="px-2 py-0.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold transition cursor-pointer flex items-center justify-center min-w-[28px] h-5"
+                >
+                  {clearingHistory ? <Loader2 size={10} className="animate-spin inline" /> : "Yes"}
+                </button>
+                <button
+                  onClick={() => setShowClearHistoryConfirm(false)}
+                  className="px-2 py-0.5 border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold transition cursor-pointer h-5 flex items-center justify-center"
+                >
+                  No
+                </button>
+              </div>
             </div>
           ) : (
             <button
               onClick={() => setShowClearHistoryConfirm(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 border border-rose-200 hover:bg-rose-50 bg-white text-rose-600 rounded-xl text-xs font-bold transition cursor-pointer shadow-sm active:scale-[0.98]"
+              className="flex items-center justify-center gap-1.5 px-3.5 py-2 border border-rose-200 hover:bg-rose-50 bg-white text-rose-600 rounded-xl text-xs font-bold transition cursor-pointer shadow-sm active:scale-[0.98] w-full sm:w-auto"
             >
-              <Trash2 className="w-3.5 h-3.5 text-rose-500 transition-transform duration-200 hover:scale-110" />
-              Clear History
+              <Trash2 className="w-3.5 h-3.5 text-rose-500 transition-transform duration-200 hover:scale-110 shrink-0" />
+              <span>Clear History</span>
             </button>
           )}
           <button
             onClick={exportAppointmentsCSV}
-            className={`${designSystem.components.buttonOutline} px-3.5 py-2 text-xs gap-1.5`}
+            className={`${designSystem.components.buttonOutline} px-3.5 py-2 text-xs gap-1.5 w-full sm:w-auto justify-center`}
           >
-            <Download className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-110" />
-            Export List
+            <Download className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-110 shrink-0" />
+            <span>Export List</span>
           </button>
           <button
             onClick={() => { setAddApptError(""); setIsAddApptModalOpen(true); }}
-            className={`${designSystem.components.buttonPrimary} px-3.5 py-2 text-xs gap-1.5`}
+            className={`${designSystem.components.buttonPrimary} px-3.5 py-2 text-xs gap-1.5 w-full sm:w-auto justify-center`}
           >
-            <Plus className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-115" />
-            New Appointment
+            <Plus className="w-3.5 h-3.5 transition-transform duration-200 hover:scale-115 shrink-0" />
+            <span>New Appointment</span>
           </button>
         </div>
       </div>
@@ -208,13 +210,13 @@ export default function AppointmentsTab({
         {/* Main Data Panel */}
         <div className="lg:col-span-8 space-y-6">
           {/* Filters Strip */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-wrap items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#e0f7fc]/70 border border-cyan-100 rounded-lg text-xs font-semibold text-cyan-700">
-              <CalendarDays className="w-3.5 h-3.5" />
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#e0f7fc]/70 border border-cyan-100 rounded-lg text-xs font-semibold text-cyan-700 w-full sm:w-auto justify-center">
+              <CalendarDays className="w-3.5 h-3.5 shrink-0" />
               <span>{filteredAppts.length} matching appointment{filteredAppts.length !== 1 ? "s" : ""}</span>
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600">
-              <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 w-full sm:w-auto justify-center">
+              <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <span>Status</span>
               <select
                 value={apptStatusFilter}
@@ -228,15 +230,15 @@ export default function AppointmentsTab({
                 <option value="PAST">Completed</option>
               </select>
             </div>
-            <div className="flex-grow"></div>
-            <div className="flex items-center gap-1.5">
+            <div className="hidden sm:block flex-grow"></div>
+            <div className="flex items-center gap-1.5 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => {
                   setApptSearch("");
                   setApptStatusFilter("All");
                 }}
-                className={`${designSystem.components.buttonOutline} px-3 py-1 text-xs`}
+                className={`${designSystem.components.buttonOutline} px-3 py-1 text-xs w-full sm:w-auto justify-center`}
               >
                 Clear
               </button>
@@ -245,7 +247,7 @@ export default function AppointmentsTab({
 
           {/* Appointments Table Card */}
           <div className="bg-white border border-slate-200 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-            <table className={`${designSystem.components.table} table-fixed`}>
+            <table className={`${designSystem.components.table} table-fixed min-w-[750px]`}>
               <thead>
                 <tr className={designSystem.components.tableHeaderRow}>
                   <th className="px-4 py-3.5 w-[18%]">Patient</th>
@@ -513,14 +515,14 @@ export default function AppointmentsTab({
                 </div>
               </div>
 
-              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-end gap-3">
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:justify-end gap-3">
                 {selectedAppointment.rawStatus === "pending" && (
                   <>
                     <button
                       type="button"
                       onClick={() => handleUpdateAppointmentStatus(selectedAppointment._id, "cancelled")}
                       disabled={updatingApptStatusId === selectedAppointment._id}
-                      className="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer"
+                      className="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer w-full sm:w-auto text-center flex items-center justify-center"
                     >
                       Cancel
                     </button>
@@ -528,7 +530,7 @@ export default function AppointmentsTab({
                       type="button"
                       onClick={() => handleUpdateAppointmentStatus(selectedAppointment._id, "confirmed")}
                       disabled={updatingApptStatusId === selectedAppointment._id}
-                      className={`${designSystem.components.buttonPrimary} px-5 py-2 text-xs`}
+                      className={`${designSystem.components.buttonPrimary} px-5 py-2 text-xs w-full sm:w-auto justify-center`}
                     >
                       {updatingApptStatusId === selectedAppointment._id ? "Confirming..." : "Confirm Appointment"}
                     </button>
@@ -541,7 +543,7 @@ export default function AppointmentsTab({
                       type="button"
                       onClick={() => handleUpdateAppointmentStatus(selectedAppointment._id, "cancelled")}
                       disabled={updatingApptStatusId === selectedAppointment._id}
-                      className="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer"
+                      className="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer w-full sm:w-auto text-center flex items-center justify-center"
                     >
                       Cancel
                     </button>
@@ -549,7 +551,7 @@ export default function AppointmentsTab({
                       type="button"
                       onClick={() => handleUpdateAppointmentStatus(selectedAppointment._id, "completed")}
                       disabled={updatingApptStatusId === selectedAppointment._id}
-                      className="px-5 py-2 bg-emerald-650 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer shadow-sm active:scale-[0.98]"
+                      className="px-5 py-2 bg-emerald-650 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer shadow-sm active:scale-[0.98] w-full sm:w-auto text-center flex items-center justify-center"
                     >
                       {updatingApptStatusId === selectedAppointment._id ? "Completing..." : "Complete Appointment"}
                     </button>
@@ -661,20 +663,20 @@ export default function AppointmentsTab({
                     className="w-full px-4 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-xl text-sm font-medium focus:outline-none focus:border-cyan-650 focus:ring-4 focus:ring-cyan-100 transition resize-none outline-none"
                   />
                 </div>
-                <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                <div className="flex flex-col sm:flex-row justify-end gap-3 pt-3 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => setIsAddApptModalOpen(false)}
-                    className={`${designSystem.components.buttonOutline} px-4 py-2 text-xs`}
+                    className={`${designSystem.components.buttonOutline} px-4 py-2 text-xs w-full sm:w-auto justify-center`}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={addingAppt}
-                    className={`${designSystem.components.buttonPrimary} px-6 py-2 text-xs gap-2`}
+                    className={`${designSystem.components.buttonPrimary} px-6 py-2 text-xs gap-2 w-full sm:w-auto justify-center`}
                   >
-                    {addingAppt ? <Loader2 size={14} className="animate-spin" /> : <CalendarPlus className="w-4 h-4 transition-transform duration-200 hover:scale-110" />}
+                    {addingAppt ? <Loader2 size={14} className="animate-spin" /> : <CalendarPlus className="w-4 h-4 transition-transform duration-200 hover:scale-110 shrink-0" />}
                     {addingAppt ? "Scheduling..." : "Schedule Appointment"}
                   </button>
                 </div>
