@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronRight, Users, Pill, Search } from "lucide-react";
 import { designSystem } from "../../styles/designSystem";
+import Avatar from "../Avatar";
 
 const containerVariants = {
   hidden: { opacity: 1 },
@@ -80,13 +81,6 @@ function PatientsSection({ uniquePatients, selectedPatient, setSelectedPatient }
                     className="divide-y divide-slate-100"
                   >
                     {uniquePatients.map((pat) => {
-                      const initials = pat.name
-                        ? pat.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "PT";
                       const isSelected = selectedPatient?._id === pat._id;
                       return (
                         <motion.tr
@@ -99,9 +93,13 @@ function PatientsSection({ uniquePatients, selectedPatient, setSelectedPatient }
                         >
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 rounded-lg bg-slate-100 text-cyan-600 flex items-center justify-center font-bold text-xs shrink-0">
-                                {initials}
-                              </div>
+                              <Avatar
+                                src={pat.profileImage}
+                                name={pat.name}
+                                className="w-10 h-10 border border-slate-200 text-xs shrink-0"
+                                alt={pat.name || "Patient"}
+                                role="patient"
+                              />
                               <div>
                                 <p className="font-bold text-slate-900 group-hover:text-cyan-600 transition-colors">
                                   {pat.name}

@@ -59,7 +59,7 @@ export async function register(req, res) {
     }
 
     // Send Verification Email
-    sendEmail({
+    await sendEmail({
       to: user.email,
       subject: "Verify your email address - MediChain",
       html: getVerificationEmailTemplate(user.name, verificationOtp),
@@ -621,7 +621,7 @@ export async function resendVerificationOtp(req, res) {
     await user.save();
 
     // Send email
-    sendEmail({
+    await sendEmail({
       to: user.email,
       subject: "Verify your email address - MediChain",
       html: getVerificationEmailTemplate(user.name, verificationOtp),
@@ -655,7 +655,7 @@ export async function forgotPassword(req, res) {
     await user.save();
 
     // Send email
-    sendEmail({
+    await sendEmail({
       to: user.email,
       subject: "Reset your password - MediChain",
       html: getPasswordResetEmailTemplate(user.name, resetOtp),

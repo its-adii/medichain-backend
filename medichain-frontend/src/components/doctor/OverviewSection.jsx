@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedCounter from "../AnimatedCounter";
+import Avatar from "../Avatar";
 import { useDebounce } from "../../hooks/useDebounce";
 import {
   Download,
@@ -481,13 +482,6 @@ function OverviewSection({
                 </div>
               ) : (
                 paginatedAppts.map((appt) => {
-                  const initials = appt.patient?.name
-                    ? appt.patient.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                    : "PT";
                   const isUpdating = updatingId === appt._id;
 
                   let statusLabel = "Scheduled";
@@ -539,15 +533,13 @@ function OverviewSection({
                         } transition-all gap-3 sm:gap-4`}
                       >
                         <div className="flex items-center gap-4">
-                          <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
-                              statusLabel === "In-Progress"
-                                ? "bg-cyan-500 text-white"
-                                : "bg-slate-200 text-slate-700"
-                            }`}
-                          >
-                            {initials}
-                          </div>
+                          <Avatar
+                            src={appt.patient?.profileImage}
+                            name={appt.patient?.name}
+                            className="w-10 h-10 border border-slate-200 text-xs shrink-0"
+                            alt={appt.patient?.name || "Patient"}
+                            role="patient"
+                          />
                           <div>
                             <p className="text-xs font-bold text-slate-900">
                               {appt.patient?.name || "Unknown Patient"}

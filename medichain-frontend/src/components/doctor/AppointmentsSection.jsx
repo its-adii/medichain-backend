@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useDebounce } from "../../hooks/useDebounce";
+import Avatar from "../Avatar";
 import {
   Download,
   Search,
@@ -258,13 +259,6 @@ function AppointmentsSection({
                       .map((appt) => {
                         const style = STATUS_STYLES[appt.status] || STATUS_STYLES.pending;
                         const isUpdating = updatingId === appt._id;
-                        const initials = appt.patient?.name
-                          ? appt.patient.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                          : "PT";
                         return (
                           <motion.tr
                             variants={rowVariants}
@@ -273,9 +267,13 @@ function AppointmentsSection({
                           >
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2.5 min-w-0">
-                                <div className="w-9 h-9 rounded-full bg-cyan-500 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                                  {initials}
-                                </div>
+                                <Avatar
+                                  src={appt.patient?.profileImage}
+                                  name={appt.patient?.name}
+                                  className="w-9 h-9 border border-slate-200 text-xs shrink-0"
+                                  alt={appt.patient?.name || "Patient"}
+                                  role="patient"
+                                />
                                 <div className="min-w-0">
                                   <p className="font-bold text-slate-900 text-xs truncate">
                                     {appt.patient?.name || "Unknown Patient"}

@@ -49,7 +49,7 @@ export async function bookAppointment(req, res) {
 
     // Send Emails
     // 1. Patient Confirmation
-    sendEmail({
+    await sendEmail({
       to: patientUser.email,
       subject: "Appointment Confirmed - MediChain",
       html: `
@@ -69,7 +69,7 @@ export async function bookAppointment(req, res) {
 
     // 2. Doctor Alert
     if (doctor.user && doctor.user.email) {
-      sendEmail({
+      await sendEmail({
         to: doctor.user.email,
         subject: "New Appointment Booked - MediChain",
         html: `
@@ -212,7 +212,7 @@ export async function updateAppointmentStatus(req, res) {
 
         // Email Alert to Doctor
         if (doctor.user.email) {
-          sendEmail({
+          await sendEmail({
             to: doctor.user.email,
             subject: "Appointment Cancelled by Patient - MediChain",
             html: `
@@ -245,7 +245,7 @@ export async function updateAppointmentStatus(req, res) {
         if (appointment.patient.email) {
           const doctorName = appointment.doctor?.user?.name || "your doctor";
           const formattedDate = appointment.date ? new Date(appointment.date).toISOString().split("T")[0] : "N/A";
-          sendEmail({
+          await sendEmail({
             to: appointment.patient.email,
             subject: `Appointment Status Update: ${currentStatus.toUpperCase()} - MediChain`,
             html: `
