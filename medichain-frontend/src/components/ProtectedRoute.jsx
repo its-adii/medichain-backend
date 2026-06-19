@@ -25,6 +25,11 @@ function ProtectedRoute({ children, roles = [] }) {
     return <Navigate to="/login" replace />;
   }
 
+  // Email verification check
+  if (user && !user.isEmailVerified && !user.isGoogleUser) {
+    return <Navigate to="/verify-email" replace />;
+  }
+
   // Role restriction: if roles are specified, check membership
   if (roles.length > 0 && !roles.includes(user.role)) {
     // Redirect to appropriate dashboard based on actual role

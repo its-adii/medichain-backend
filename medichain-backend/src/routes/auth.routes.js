@@ -14,6 +14,11 @@ const router = Router();
 
 router.post("/register", registerValidator, validate, authController.register);
 router.post("/login", loginValidator, validate, authController.login);
+router.post("/google-login", authController.googleLogin);
+router.post("/verify-email", authController.verifyEmail);
+router.post("/resend-verification-otp", authController.resendVerificationOtp);
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-password", authController.resetPassword);
 router.post("/refresh-token", authController.refreshToken);
 router.post("/logout", authController.logout);
 router.get("/me", verifyToken, authController.getMe);

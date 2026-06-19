@@ -9,6 +9,7 @@ import { Bell, X, Stethoscope } from "lucide-react";
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Doctors = lazy(() => import("./pages/Doctors"));
 const DoctorProfile = lazy(() => import("./pages/DoctorProfile"));
@@ -72,6 +73,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
 
             {/* Patient-only routes wrapped in PatientLayout */}
             <Route

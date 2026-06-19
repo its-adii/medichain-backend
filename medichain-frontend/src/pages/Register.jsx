@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import FloatingLabelInput from "../components/auth/FloatingLabelInput";
@@ -9,6 +10,8 @@ import AuthVisualPanel from "../components/auth/AuthVisualPanel";
 import AlertBanner from "../components/auth/AlertBanner";
 
 function Register() {
+  const { setUser, setAccessToken } = useAuth();
+  
   const [role, setRole] = useState("patient"); // 'patient' | 'doctor'
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +22,8 @@ function Register() {
   
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSandboxModal, setShowSandboxModal] = useState(false);
+  const [customMockEmail, setCustomMockEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -39,7 +44,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await api.post("/auth/register", {
+      const response = await api.post("/auth/register", {
         name,
         email,
         password,
@@ -47,10 +52,46 @@ function Register() {
         specialization: role === "doctor" ? specialization : undefined,
       });
       
-      // On success, redirect to login
-      navigate("/login");
+      const { user: registeredUser, accessToken } = response.data;
+      
+      // Auto login and save tokens
+      localStorage.setItem("accessToken", accessToken);
+      setAccessToken(accessToken);
+      setUser(registeredUser);
+      
+      navigate("/verify-email");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleGoogleClick() {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (clientId && clientId !== "YOUR_GOOGLE_CLIENT_ID" && !clientId.includes("placeholder")) {
+      const redirectUri = encodeURIComponent(window.location.origin + "/login");
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&nonce=medichain_${Date.now()}`;
+      window.location.href = googleAuthUrl;
+    } else {
+      setShowSandboxModal(true);
+    }
+  }
+
+  async function handleSandboxLogin(emailVal, nameVal) {
+    setShowSandboxModal(false);
+    setLoading(true);
+    setError("");
+    try {
+      const mockToken = `mock-google-token-${emailVal}:${nameVal}`;
+      const response = await api.post("/auth/google-login", { credential: mockToken });
+      const { user: loggedUser, accessToken } = response.data;
+      localStorage.setItem("accessToken", accessToken);
+      setAccessToken(accessToken);
+      setUser(loggedUser);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Sandbox login failed.");
     } finally {
       setLoading(false);
     }
@@ -248,7 +289,7 @@ function Register() {
             <div className="grid grid-cols-2 gap-4">
               <button
                 className="h-10 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center gap-2 hover:border-slate-350 dark:hover:border-slate-700 transition-all cursor-pointer bg-white dark:bg-slate-900/50 text-xs font-bold text-slate-800 dark:text-white shadow-xs"
-                onClick={() => alert("Google Account integration is a prototype.")}
+                onClick={handleGoogleClick}
                 type="button"
               >
                 <svg className="w-4.5 h-4.5" viewBox="0 0 24 24">
@@ -281,6 +322,85 @@ function Register() {
           </motion.div>
         </div>
       </section>
+
+      {/* Sandbox Chooser Modal */}
+      <AnimatePresence>
+        {showSandboxModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl relative"
+            >
+              <button
+                onClick={() => setShowSandboxModal(false)}
+                className="absolute top-4 right-4 text-slate-450 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer flex items-center justify-center border-0 bg-transparent"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+
+              <div className="text-left">
+                <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1.5">
+                  Google OAuth Sandbox Mode
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
+                  No Client ID is configured. Select a mock Google account below to test the authentication flow.
+                </p>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={() => handleSandboxLogin("patient-google@medichain.com", "Google Patient")}
+                    className="w-full p-4 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
+                    type="button"
+                  >
+                    <div className="text-left">
+                      <p className="text-xs font-black text-slate-900 dark:text-white">Mock Google Patient</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">patient-google@medichain.com</p>
+                    </div>
+                    <span className="material-symbols-outlined text-slate-400 group-hover:text-cyan-500 transition-colors">login</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleSandboxLogin("doctor-google@medichain.com", "Google Doctor")}
+                    className="w-full p-4 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
+                    type="button"
+                  >
+                    <div className="text-left">
+                      <p className="text-xs font-black text-slate-900 dark:text-white">Mock Google Doctor</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">doctor-google@medichain.com</p>
+                    </div>
+                    <span className="material-symbols-outlined text-slate-400 group-hover:text-cyan-500 transition-colors">login</span>
+                  </button>
+
+                  <div className="relative py-2">
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-150 dark:border-slate-800"></div></div>
+                    <span className="relative px-2 bg-white dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400 tracking-wider">Or custom email</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <input
+                      type="email"
+                      placeholder="custom-email@gmail.com"
+                      value={customMockEmail}
+                      onChange={(e) => setCustomMockEmail(e.target.value)}
+                      className="w-full px-4 h-11 bg-slate-50 dark:bg-slate-850 border border-slate-205 dark:border-slate-850 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                    />
+                    <button
+                      onClick={() => handleSandboxLogin(customMockEmail, customMockEmail.split("@")[0] || "Custom User")}
+                      disabled={!customMockEmail}
+                      className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl disabled:opacity-50 transition-all cursor-pointer border-0"
+                      type="button"
+                    >
+                      Login with Custom Account
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

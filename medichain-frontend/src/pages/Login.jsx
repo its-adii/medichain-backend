@@ -25,13 +25,17 @@ function Login() {
   
   // Reset Password states
   const [recoveryEmail, setRecoveryEmail] = useState("");
+  const [recoveryOtp, setRecoveryOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   
   // Action/UX states
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [showSandboxModal, setShowSandboxModal] = useState(false);
+  const [customMockEmail, setCustomMockEmail] = useState("");
 
   const { setUser, setAccessToken } = useAuth();
   const navigate = useNavigate();
@@ -43,10 +47,41 @@ function Login() {
   const reqNumbers = /\d/.test(newPassword);
   const isResetValid = reqLength && reqSymbols && reqCase && reqNumbers && newPassword === confirmPassword;
 
+  // Parse OIDC hash on mount
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.includes("id_token=")) {
+      const params = new URLSearchParams(hash.substring(1)); // Remove the leading '#'
+      const idToken = params.get("id_token");
+      if (idToken) {
+        handleGoogleLogin(idToken);
+      }
+    }
+  }, []);
+
+  async function handleGoogleLogin(idToken) {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await api.post("/auth/google-login", { credential: idToken });
+      const { user, accessToken } = response.data;
+      localStorage.setItem("accessToken", accessToken);
+      setAccessToken(accessToken);
+      setUser(user);
+      window.history.replaceState(null, null, " ");
+      navigate(ROLE_REDIRECTS[user.role] || "/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Google Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleLogin(e) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
     try {
       const response = await api.post("/auth/login", { email, password });
@@ -64,26 +99,39 @@ function Login() {
     }
   }
 
-  function handleForgotPasswordRequest(e) {
+  async function handleForgotPasswordRequest(e) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.post("/auth/forgot-password", { email: recoveryEmail });
       setView("forgot-check");
-    }, 1200);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to initiate recovery. Please verify the email.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  // Resend email handler with custom toast transition
-  function handleResendEmail() {
-    setToastVisible(true);
-    setTimeout(() => {
-      setToastVisible(false);
-    }, 3000);
+  async function handleResendEmail() {
+    setLoading(true);
+    setError("");
+    try {
+      await api.post("/auth/forgot-password", { email: recoveryEmail });
+      setToastVisible(true);
+      setTimeout(() => {
+        setToastVisible(false);
+      }, 3000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to resend recovery passcode.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleResetPasswordSubmit(e) {
+  async function handleResetPasswordSubmit(e) {
     e.preventDefault();
     if (!reqLength || !reqSymbols || !reqCase || !reqNumbers) {
       setError("Please satisfy all security requirements.");
@@ -93,16 +141,64 @@ function Login() {
       setError("Passwords do not match.");
       return;
     }
+    if (!recoveryOtp || recoveryOtp.length < 6) {
+      setError("Please enter the 6-digit recovery code.");
+      return;
+    }
 
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
-    setTimeout(() => {
+    try {
+      await api.post("/auth/reset-password", {
+        email: recoveryEmail,
+        otp: recoveryOtp,
+        newPassword,
+      });
+      setSuccessMessage("Password reset successfully! Redirecting...");
+      setTimeout(() => {
+        setView("login");
+        setNewPassword("");
+        setConfirmPassword("");
+        setRecoveryOtp("");
+        setSuccessMessage("");
+      }, 2000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to reset password. Please check the code.");
+    } finally {
       setLoading(false);
-      alert("Password has been reset successfully! You can now log in with your new password.");
-      setPassword("");
-      setView("login");
-    }, 1500);
+    }
+  }
+
+  function handleGoogleClick() {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (clientId && clientId !== "YOUR_GOOGLE_CLIENT_ID" && !clientId.includes("placeholder")) {
+      const redirectUri = encodeURIComponent(window.location.origin + "/login");
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&nonce=medichain_${Date.now()}`;
+      window.location.href = googleAuthUrl;
+    } else {
+      setShowSandboxModal(true);
+    }
+  }
+
+  async function handleSandboxLogin(emailVal, nameVal) {
+    setShowSandboxModal(false);
+    setLoading(true);
+    setError("");
+    try {
+      const mockToken = `mock-google-token-${emailVal}:${nameVal}`;
+      const response = await api.post("/auth/google-login", { credential: mockToken });
+      const { user: loggedUser, accessToken } = response.data;
+      localStorage.setItem("accessToken", accessToken);
+      setAccessToken(accessToken);
+      setUser(loggedUser);
+      navigate(ROLE_REDIRECTS[loggedUser.role] || "/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Sandbox login failed.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const viewVariants = {
@@ -255,7 +351,7 @@ function Login() {
                   <button
                     className="w-full py-3.5 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white font-bold text-sm rounded-2xl hover:border-slate-350 dark:hover:border-slate-700 active:scale-[0.99] transition-all flex items-center justify-center gap-2.5 cursor-pointer shadow-xs"
                     type="button"
-                    onClick={() => alert("Google Sign-In is a prototype.")}
+                    onClick={handleGoogleClick}
                   >
                     <svg className="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
@@ -430,32 +526,49 @@ function Login() {
                   </p>
                 </div>
 
-                <AlertBanner message={error} />
+                 <AlertBanner message={error} />
+                 {successMessage && (
+                   <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl text-emerald-600 dark:text-emerald-450 text-xs font-semibold flex items-center gap-2">
+                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                     <span>{successMessage}</span>
+                   </div>
+                 )}
+ 
+                 <form className="space-y-5" onSubmit={handleResetPasswordSubmit}>
+                   <FloatingLabelInput
+                     id="recovery_otp"
+                     label="6-digit Recovery Passcode"
+                     icon="lock"
+                     type="text"
+                     value={recoveryOtp}
+                     onChange={(e) => setRecoveryOtp(e.target.value)}
+                     autoComplete="off"
+                     required
+                   />
 
-                <form className="space-y-5" onSubmit={handleResetPasswordSubmit}>
-                  <FloatingLabelInput
-                    id="new_password"
-                    label="New Password"
-                    icon="lock"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    autoComplete="new-password"
-                    required
-                  />
-
-                  <FloatingLabelInput
-                    id="confirm_password"
-                    label="Confirm New Password"
-                    icon="lock"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    autoComplete="new-password"
-                    required
-                  />
-
-                  <PasswordStrengthIndicator password={newPassword} />
+                   <FloatingLabelInput
+                     id="new_password"
+                     label="New Password"
+                     icon="lock"
+                     type="password"
+                     value={newPassword}
+                     onChange={(e) => setNewPassword(e.target.value)}
+                     autoComplete="new-password"
+                     required
+                   />
+ 
+                   <FloatingLabelInput
+                     id="confirm_password"
+                     label="Confirm New Password"
+                     icon="lock"
+                     type="password"
+                     value={confirmPassword}
+                     onChange={(e) => setConfirmPassword(e.target.value)}
+                     autoComplete="new-password"
+                     required
+                   />
+ 
+                   <PasswordStrengthIndicator password={newPassword} />
 
                   <div className="space-y-3 pt-2">
                     <motion.button
@@ -497,6 +610,85 @@ function Login() {
             <CheckCircle2 className="w-5 h-5 text-emerald-500 animate-pulse" />
             <span>Verification email resent successfully.</span>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Sandbox Chooser Modal */}
+      <AnimatePresence>
+        {showSandboxModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl relative"
+            >
+              <button
+                onClick={() => setShowSandboxModal(false)}
+                className="absolute top-4 right-4 text-slate-450 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer flex items-center justify-center border-0 bg-transparent"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+
+              <div className="text-left">
+                <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1.5">
+                  Google OAuth Sandbox Mode
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
+                  No Client ID is configured. Select a mock Google account below to test the authentication flow.
+                </p>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={() => handleSandboxLogin("patient-google@medichain.com", "Google Patient")}
+                    className="w-full p-4 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
+                    type="button"
+                  >
+                    <div className="text-left">
+                      <p className="text-xs font-black text-slate-900 dark:text-white">Mock Google Patient</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">patient-google@medichain.com</p>
+                    </div>
+                    <span className="material-symbols-outlined text-slate-400 group-hover:text-cyan-500 transition-colors">login</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleSandboxLogin("doctor-google@medichain.com", "Google Doctor")}
+                    className="w-full p-4 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
+                    type="button"
+                  >
+                    <div className="text-left">
+                      <p className="text-xs font-black text-slate-900 dark:text-white">Mock Google Doctor</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">doctor-google@medichain.com</p>
+                    </div>
+                    <span className="material-symbols-outlined text-slate-400 group-hover:text-cyan-500 transition-colors">login</span>
+                  </button>
+
+                  <div className="relative py-2">
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-150 dark:border-slate-800"></div></div>
+                    <span className="relative px-2 bg-white dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400 tracking-wider">Or custom email</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <input
+                      type="email"
+                      placeholder="custom-email@gmail.com"
+                      value={customMockEmail}
+                      onChange={(e) => setCustomMockEmail(e.target.value)}
+                      className="w-full px-4 h-11 bg-slate-50 dark:bg-slate-850 border border-slate-205 dark:border-slate-850 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                    />
+                    <button
+                      onClick={() => handleSandboxLogin(customMockEmail, customMockEmail.split("@")[0] || "Custom User")}
+                      disabled={!customMockEmail}
+                      className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl disabled:opacity-50 transition-all cursor-pointer border-0"
+                      type="button"
+                    >
+                      Login with Custom Account
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </motion.div>
