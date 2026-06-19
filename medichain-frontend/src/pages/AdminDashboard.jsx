@@ -761,7 +761,7 @@ function AdminDashboard() {
             >
               <Menu size={20} />
             </button>
-            <div className="relative w-full group">
+            <div className="relative w-full group hidden sm:block">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors" />
               <input
                 className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/5 transition-all text-slate-900 placeholder:text-slate-400 outline-none"
@@ -824,7 +824,7 @@ function AdminDashboard() {
         </header>
 
         {/* Content Area */}
-        <div className="p-8 space-y-6 flex-1 overflow-y-auto bg-[#f8f9ff]">
+        <div className="p-4 sm:p-8 space-y-6 flex-1 overflow-y-auto bg-[#f8f9ff]">
           {loading ? (
             <div className="space-y-6 animate-pulse">
               {/* Header skeleton */}

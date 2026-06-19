@@ -147,6 +147,8 @@ function PatientLayout() {
   // Sidebar links (Image 2 & 4 Left Sidebar)
   const sidebarLinks = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Appointments", path: "/appointments", icon: CalendarCheck },
+    { name: "Medical Records", path: "/medical-records", icon: FileText },
     { name: "My Doctors", path: "/doctors", icon: Stethoscope },
     { name: "Insurance", path: "/insurance", icon: ShieldCheck },
     { name: "Billings", path: "/billings", icon: CreditCard },
@@ -336,7 +338,7 @@ function PatientLayout() {
           <div className="flex items-center gap-6">
             
             {/* Search Input bar (records/history searching indicator) */}
-            <div className="relative w-64 group">
+            <div className="relative w-64 group hidden sm:block">
               <Search 
                 size={16} 
                 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors" 
@@ -369,7 +371,7 @@ function PatientLayout() {
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-1 pl-2.5 bg-slate-50 border border-slate-200 hover:border-cyan-300 rounded-full transition-colors cursor-pointer"
               >
-                <span className="text-[11px] font-black text-slate-700 tracking-wider">
+                <span className="text-[11px] font-black text-slate-700 tracking-wider hidden sm:inline">
                   {user?.name ? user.name.split(" ")[0].toUpperCase() : "ACCOUNT"}
                 </span>
                 <Avatar 

@@ -253,7 +253,7 @@ function OverviewSection({
       exit={{ opacity: 0 }}
       className="max-w-7xl mx-auto space-y-6"
     >
-      <div className="mb-8 flex justify-between items-end gap-4">
+      <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <h2 className={designSystem.typography.pageTitle}>
             Welcome back, Dr. {doctorDisplayName}

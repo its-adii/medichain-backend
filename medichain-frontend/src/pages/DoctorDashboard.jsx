@@ -644,7 +644,7 @@ function DoctorDashboard() {
           <div className="flex items-center gap-6">
 
             {/* Search Input bar */}
-            <div className="relative w-64 group">
+            <div className="relative w-64 group hidden sm:block">
               <Search 
                 size={16} 
                 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors" 
@@ -712,7 +712,7 @@ function DoctorDashboard() {
         </header>
 
         {/* Main Content Body Container */}
-        <main className="pt-8 px-10 pb-10 min-h-screen bg-slate-50">
+        <main className="pt-8 px-4 sm:px-10 pb-10 min-h-screen bg-slate-50">
           <AnimatePresence>
             {!profileExists && (
               <motion.div
