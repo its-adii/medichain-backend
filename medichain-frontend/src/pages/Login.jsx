@@ -1,9 +1,9 @@
 import api from "../api/axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, ShieldCheck, CheckCircle2, Database, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldCheck, CheckCircle2, Database, Mail, Key, HelpCircle, ExternalLink, X, Globe } from "lucide-react";
 import FloatingLabelInput from "../components/auth/FloatingLabelInput";
 import AuthVisualPanel from "../components/auth/AuthVisualPanel";
 import AlertBanner from "../components/auth/AlertBanner";
@@ -36,9 +36,20 @@ function Login() {
   const [toastVisible, setToastVisible] = useState(false);
   const [showSandboxModal, setShowSandboxModal] = useState(false);
   const [customMockEmail, setCustomMockEmail] = useState("");
+  const [googleClientIdInput, setGoogleClientIdInput] = useState(
+    localStorage.getItem("googleClientId") || ""
+  );
+  const [showInstructions, setShowInstructions] = useState(false);
 
-  const { setUser, setAccessToken } = useAuth();
+  const { user, setUser, setAccessToken, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate(ROLE_REDIRECTS[user.role] || "/dashboard");
+    }
+  }, [user, authLoading, navigate]);
 
   // Password Requirements verification
   const reqLength = newPassword.length >= 12;
@@ -172,14 +183,35 @@ function Login() {
   }
 
   function handleGoogleClick() {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (clientId && clientId !== "YOUR_GOOGLE_CLIENT_ID" && !clientId.includes("placeholder")) {
+    const envClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const isEnvConfigured = envClientId && envClientId !== "YOUR_GOOGLE_CLIENT_ID" && !envClientId.includes("placeholder");
+
+    if (isEnvConfigured) {
       const redirectUri = encodeURIComponent(window.location.origin + "/login");
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&nonce=medichain_${Date.now()}`;
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${envClientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&nonce=medichain_${Date.now()}`;
       window.location.href = googleAuthUrl;
     } else {
       setShowSandboxModal(true);
     }
+  }
+
+  function handleConnectGoogle(e) {
+    if (e) e.preventDefault();
+    if (!googleClientIdInput || googleClientIdInput.trim() === "") {
+      setError("Please enter a valid Google OAuth Client ID.");
+      return;
+    }
+    const cleanId = googleClientIdInput.trim();
+    if (!cleanId.endsWith(".apps.googleusercontent.com")) {
+      setError("Invalid Google Client ID format. It must end with '.apps.googleusercontent.com'. Please copy the full Client ID from your Google Cloud Console.");
+      return;
+    }
+    localStorage.setItem("googleClientId", cleanId);
+    setShowSandboxModal(false);
+    
+    const redirectUri = encodeURIComponent(window.location.origin + "/login");
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${cleanId}&redirect_uri=${redirectUri}&response_type=id_token&scope=openid%20email%20profile&nonce=medichain_${Date.now()}`;
+    window.location.href = googleAuthUrl;
   }
 
   async function handleSandboxLogin(emailVal, nameVal) {
@@ -613,7 +645,7 @@ function Login() {
         )}
       </AnimatePresence>
 
-      {/* Sandbox Chooser Modal */}
+      {/* Google OAuth & Sandbox Portal */}
       <AnimatePresence>
         {showSandboxModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
@@ -621,27 +653,91 @@ function Login() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl relative"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setShowSandboxModal(false)}
-                className="absolute top-4 right-4 text-slate-450 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer flex items-center justify-center border-0 bg-transparent"
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer flex items-center justify-center border-0 bg-transparent"
               >
-                <span className="material-symbols-outlined text-lg">close</span>
+                <X className="w-5 h-5" />
               </button>
 
               <div className="text-left">
-                <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1.5">
-                  Google OAuth Sandbox Mode
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
-                  No Client ID is configured. Select a mock Google account below to test the authentication flow.
-                </p>
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                    <Key className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-slate-900 dark:text-white">
+                      Google OAuth Setup
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Configure Real Google Account</p>
+                  </div>
+                </div>
 
-                <div className="space-y-3">
+                {/* Real Google OAuth Setup */}
+                <div className="bg-[#f8f9ff] dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 mb-4">
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-blue-500" />
+                    Enter Google Client ID
+                  </h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+                    Connect actual Google/Gmail credentials to authenticate.
+                  </p>
+
+                  <form onSubmit={handleConnectGoogle} className="space-y-2.5">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Google Client ID (e.g., 123456-abc.apps.googleusercontent.com)"
+                        value={googleClientIdInput}
+                        onChange={(e) => setGoogleClientIdInput(e.target.value)}
+                        className="w-full px-3 h-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setShowInstructions(!showInstructions)}
+                        className="text-[10px] text-cyan-600 dark:text-cyan-400 font-black hover:underline flex items-center gap-0.5 border-0 bg-transparent cursor-pointer"
+                      >
+                        <HelpCircle className="w-3.5 h-3.5" />
+                        {showInstructions ? "Hide instructions" : "How do I set this up?"}
+                      </button>
+                    </div>
+
+                    {showInstructions && (
+                      <div className="mt-2 text-[10px] text-slate-500 dark:text-slate-400 space-y-1.5 border-t border-slate-150 dark:border-slate-800/80 pt-2 font-medium leading-relaxed">
+                        <p>1. Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer" className="text-cyan-650 hover:underline inline-flex items-center gap-0.5 font-bold">Google Cloud Console <ExternalLink className="w-2.5 h-2.5" /></a></p>
+                        <p>2. Create a Project, configure OAuth Consent Screen, and select Credentials &gt; Create Credentials &gt; **OAuth Web Client ID**.</p>
+                        <p>3. Whitelist <code className="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded font-mono">http://localhost:5173</code> in **Authorized JavaScript Origins**.</p>
+                        <p>4. Whitelist <code className="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded font-mono">http://localhost:5173/login</code> in **Authorized Redirect URIs**.</p>
+                        <p>5. Paste the ID above (it will persist in your browser for testing) or set it in your frontend code as <code className="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded font-mono">VITE_GOOGLE_CLIENT_ID</code>.</p>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={!googleClientIdInput}
+                      className="w-full h-10 bg-cyan-600 hover:bg-cyan-750 text-white font-bold text-xs rounded-xl transition-all cursor-pointer border-0 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    >
+                      <Globe className="w-3.5 h-3.5" />
+                      Sign In with Real Google Account
+                    </button>
+                  </form>
+                </div>
+
+                {/* Section divider */}
+                <div className="relative py-2 mb-2">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-150 dark:border-slate-800/85"></div></div>
+                  <span className="relative px-2 bg-white dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400 tracking-wider">Or offline developer sandbox</span>
+                </div>
+
+                <div className="space-y-2">
                   <button
                     onClick={() => handleSandboxLogin("patient-google@medichain.com", "Google Patient")}
-                    className="w-full p-4 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
+                    className="w-full p-3 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800/60 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
                     type="button"
                   >
                     <div className="text-left">
@@ -653,7 +749,7 @@ function Login() {
 
                   <button
                     onClick={() => handleSandboxLogin("doctor-google@medichain.com", "Google Doctor")}
-                    className="w-full p-4 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
+                    className="w-full p-3 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-150 dark:border-slate-800/60 rounded-2xl flex items-center justify-between group cursor-pointer transition-all border-0"
                     type="button"
                   >
                     <div className="text-left">
@@ -663,26 +759,21 @@ function Login() {
                     <span className="material-symbols-outlined text-slate-400 group-hover:text-cyan-500 transition-colors">login</span>
                   </button>
 
-                  <div className="relative py-2">
-                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-150 dark:border-slate-800"></div></div>
-                    <span className="relative px-2 bg-white dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400 tracking-wider">Or custom email</span>
-                  </div>
-
-                  <div className="space-y-2">
+                  <div className="flex gap-2 pt-1">
                     <input
                       type="email"
                       placeholder="custom-email@gmail.com"
                       value={customMockEmail}
                       onChange={(e) => setCustomMockEmail(e.target.value)}
-                      className="w-full px-4 h-11 bg-slate-50 dark:bg-slate-850 border border-slate-205 dark:border-slate-850 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                      className="flex-1 px-3 h-10 bg-slate-50 dark:bg-slate-850 border border-slate-205 dark:border-slate-850 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                     />
                     <button
                       onClick={() => handleSandboxLogin(customMockEmail, customMockEmail.split("@")[0] || "Custom User")}
                       disabled={!customMockEmail}
-                      className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl disabled:opacity-50 transition-all cursor-pointer border-0"
+                      className="px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl disabled:opacity-50 transition-all cursor-pointer border-0"
                       type="button"
                     >
-                      Login with Custom Account
+                      Bypass login
                     </button>
                   </div>
                 </div>

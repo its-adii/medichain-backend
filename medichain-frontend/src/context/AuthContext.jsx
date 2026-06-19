@@ -8,9 +8,26 @@ export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On app mount, try to restore session via refresh cookie
+  // On app mount, try to restore session via local access token or refresh cookie
   useEffect(() => {
     async function restoreSession() {
+      const storedToken = localStorage.getItem("accessToken");
+      if (storedToken) {
+        try {
+          // Attempt to get user using existing token
+          const meRes = await api.get("/auth/me", {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          });
+          setUser(meRes.data.user);
+          setAccessToken(localStorage.getItem("accessToken"));
+          setLoading(false);
+          return;
+        } catch (err) {
+          // Token might be expired or invalid, fall through to refresh
+          console.log("Token verification failed, attempting refresh...", err);
+        }
+      }
+
       try {
         // Try to get a fresh access token using the httpOnly refresh cookie
         const refreshRes = await api.post("/auth/refresh-token");
@@ -27,6 +44,7 @@ export function AuthProvider({ children }) {
         // No valid session — user must log in
         setUser(null);
         setAccessToken(null);
+        localStorage.removeItem("accessToken");
       } finally {
         setLoading(false);
       }

@@ -8,7 +8,7 @@ import AuthVisualPanel from "../components/auth/AuthVisualPanel";
 import AlertBanner from "../components/auth/AlertBanner";
 
 function VerifyEmail() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -22,12 +22,14 @@ function VerifyEmail() {
 
   // Redirect if user is not logged in or already verified
   useEffect(() => {
+    if (authLoading) return;
+
     if (!user) {
       navigate("/login");
     } else if (user.isEmailVerified || user.isGoogleUser) {
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   // Count down resend timer
   useEffect(() => {
@@ -124,6 +126,20 @@ function VerifyEmail() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 gap-4">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-cyan-100 border-t-cyan-500 rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Mail size={20} className="text-cyan-600 animate-pulse" />
+          </div>
+        </div>
+        <p className="text-slate-500 dark:text-slate-400 font-medium animate-pulse">Restoring session...</p>
+      </div>
+    );
   }
 
   if (!user) return null;
