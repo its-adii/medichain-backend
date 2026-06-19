@@ -11,9 +11,9 @@ async function getTransporter() {
   const smtpPass = process.env.SMTP_PASS;
 
   if (smtpHost && smtpUser && smtpPass) {
-    const isGmailWithoutPort = smtpHost.toLowerCase().includes("gmail") && !process.env.SMTP_PORT;
+    const isGmail = smtpHost.toLowerCase().includes("gmail");
     transporter = nodemailer.createTransport(
-      isGmailWithoutPort
+      isGmail
         ? {
             service: "gmail",
             auth: {

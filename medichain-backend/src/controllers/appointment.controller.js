@@ -187,68 +187,82 @@ export async function updateAppointmentStatus(req, res) {
     }
     
     await appointment.save();
-
     const io = req.app.get("io");
     const users = req.app.get("users");
 
+    // Realtime Socket.io and Email Notifications
+    if (io) {
+      io.emit("appointmentsUpdated");
+    }
+
     if (req.user.role === "patient") {
       const doctor = await doctorModel.findById(appointment.doctor).populate("user", "name email");
-      if (doctor) {
-        const doctorSocketId = users.get(doctor.user._id.toString());
-        if (doctorSocketId) {
+      if (doctor && doctor.user) {
+        const doctorUserId = doctor.user._id?.toString();
+        const doctorSocketId = (users && doctorUserId) ? users.get(doctorUserId) : null;
+        const formattedDate = appointment.date ? new Date(appointment.date).toISOString().split("T")[0] : "N/A";
+        const message = `Appointment on ${formattedDate} was cancelled by patient ${req.user.name || "Patient"}`;
+
+        if (io && doctorSocketId) {
           io.to(doctorSocketId).emit("appointmentStatusChanged", {
-            message: `Appointment on ${new Date(appointment.date).toISOString().split("T")[0]} was cancelled by patient ${req.user.name}`,
+            message,
             appointment
           });
         }
 
         // Email Alert to Doctor
-        if (doctor.user && doctor.user.email) {
+        if (doctor.user.email) {
           sendEmail({
             to: doctor.user.email,
             subject: "Appointment Cancelled by Patient - MediChain",
             html: `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0;">
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 16px;">
                 <h2 style="color: #ef4444;">Appointment Cancelled</h2>
-                <p>Hello <strong>Dr. ${doctor.user.name}</strong>,</p>
-                <p>Your appointment on <strong>${new Date(appointment.date).toISOString().split("T")[0]}</strong> at <strong>${appointment.time}</strong> has been cancelled by patient <strong>${req.user.name}</strong>.</p>
+                <p>Hello <strong>Dr. ${doctor.user.name || ""}</strong>,</p>
+                <p>Your appointment on <strong>${formattedDate}</strong> at <strong>${appointment.time || "N/A"}</strong> has been cancelled by patient <strong>${req.user.name || "Patient"}</strong>.</p>
+                <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+                <p style="font-size: 12px; color: #64748b;">Please sign into your MediChain dashboard to view your schedule details.</p>
               </div>
             `
           });
         }
       }
     } else {
-      const patientSocketId = users.get(appointment.patient._id.toString());
-      if (patientSocketId) {
-        io.to(patientSocketId).emit("appointmentStatusChanged", {
-          message: `Your appointment status was updated to '${status}'`,
-          appointment
-        });
-      }
+      if (appointment.patient) {
+        const patientUserId = appointment.patient._id?.toString();
+        const patientSocketId = (users && patientUserId) ? users.get(patientUserId) : null;
+        const currentStatus = appointment.status || "pending";
+        const message = `Your appointment status was updated to '${currentStatus}'`;
 
-      // Email Alert to Patient
-      if (appointment.patient && appointment.patient.email) {
-        sendEmail({
-          to: appointment.patient.email,
-          subject: `Appointment Status Update: ${status.toUpperCase()} - MediChain`,
-          html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0;">
-              <h2 style="color: #2563eb;">Appointment Status Update</h2>
-              <p>Hello <strong>${appointment.patient.name}</strong>,</p>
-              <p>Your appointment with <strong>Dr. ${appointment.doctor.user.name}</strong> has been updated to <strong>${status.toUpperCase()}</strong>.</p>
-              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-              <p><strong>Date:</strong> ${new Date(appointment.date).toISOString().split("T")[0]}</p>
-              <p><strong>Time:</strong> ${appointment.time}</p>
-              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #64748b;">Please sign into your MediChain dashboard to view your schedule details.</p>
-            </div>
-          `
-        });
-      }
-    }
+        if (io && patientSocketId) {
+          io.to(patientSocketId).emit("appointmentStatusChanged", {
+            message,
+            appointment
+          });
+        }
 
-    if (io) {
-      io.emit("appointmentsUpdated");
+        // Email Alert to Patient
+        if (appointment.patient.email) {
+          const doctorName = appointment.doctor?.user?.name || "your doctor";
+          const formattedDate = appointment.date ? new Date(appointment.date).toISOString().split("T")[0] : "N/A";
+          sendEmail({
+            to: appointment.patient.email,
+            subject: `Appointment Status Update: ${currentStatus.toUpperCase()} - MediChain`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 16px;">
+                <h2 style="color: #2563eb;">Appointment Status Update</h2>
+                <p>Hello <strong>${appointment.patient.name || ""}</strong>,</p>
+                <p>Your appointment with <strong>Dr. ${doctorName}</strong> has been updated to <strong>${currentStatus.toUpperCase()}</strong>.</p>
+                <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+                <p><strong>Date:</strong> ${formattedDate}</p>
+                <p><strong>Time:</strong> ${appointment.time || "N/A"}</p>
+                <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+                <p style="font-size: 12px; color: #64748b;">Please sign into your MediChain dashboard to view your schedule details.</p>
+              </div>
+            `
+          });
+        }
+      }
     }
 
     res.status(200).json({
