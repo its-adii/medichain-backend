@@ -261,6 +261,7 @@ function Doctors() {
                           name={doctor.user?.name || "Dr"}
                           className="w-full h-full object-cover rounded-none group-hover:scale-105 transition-transform duration-500 text-3xl"
                           alt={doctor.user?.name}
+                          role="doctor"
                         />
                         {/* Status/Verified Badge */}
                         <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm text-cyan-600 text-[10px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">

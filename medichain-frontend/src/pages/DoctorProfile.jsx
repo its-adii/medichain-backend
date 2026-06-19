@@ -143,6 +143,7 @@ function DoctorProfile() {
                     name={doctor.user?.name || "Dr"}
                     className="w-28 h-28 rounded-2xl text-3xl shadow-md"
                     alt={doctor.user?.name}
+                    role="doctor"
                   />
                   {doctor.isVerified && (
                     <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-1.5 rounded-lg shadow-lg border-2 border-white">

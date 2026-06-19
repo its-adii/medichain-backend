@@ -374,7 +374,7 @@ export async function updateMe(req, res) {
 
     if (req.file) {
       try {
-        const uploadedImageUrl = await uploadToImageKit(req.file);
+        const uploadedImageUrl = await uploadToImageKit(req.file, req);
         updateData.profileImage = uploadedImageUrl;
       } catch (uploadError) {
         console.error("ImageKit upload failed during updateMe:", uploadError.message);
@@ -404,6 +404,13 @@ export async function updateMe(req, res) {
       updateData,
       { new: true }
     );
+
+    if (updatedUser.role === "doctor" && updateData.profileImage !== undefined) {
+      await doctorModel.findOneAndUpdate(
+        { user: updatedUser._id },
+        { profileImage: updateData.profileImage }
+      );
+    }
 
     const io = req.app.get("io");
     if (io) {

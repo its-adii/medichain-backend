@@ -200,6 +200,7 @@ export default function SettingsTab({
                         name={profileName || "Admin"} 
                         className="w-20 h-20 border-2 border-cyan-500 shadow-md text-xl" 
                         alt="Profile Preview"
+                        role={user?.role || "admin"}
                       />
                       <button
                         type="button"

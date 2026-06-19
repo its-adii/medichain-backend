@@ -220,11 +220,7 @@ function AdminDashboard() {
       }
 
       if (hasProfileUpdates) {
-        const res = await api.patch("/auth/me", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const res = await api.patch("/auth/me", formData);
         if (res.data?.user) {
           setUser(res.data.user);
           setProfileImage(res.data.user.profileImage || "");
@@ -628,10 +624,8 @@ function AdminDashboard() {
         }
         // Then check the User model's profileImage
         if (u.profileImage) return u.profileImage;
-        // Fallback to stock photo
-        return u.role === "doctor"
-          ? `https://images.unsplash.com/photo-${u.name.charCodeAt(0) % 2 === 0 ? "1559839734-2b71ea197ec2" : "1622253692010-333f2da6031d"}?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80`
-          : `https://images.unsplash.com/photo-${u.name.charCodeAt(0) % 2 === 0 ? "1507003211169-0a1dd7228f2d" : "1500648767791-00dcc994a43e"}?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80`;
+        // Fallback to empty string to trigger Avatar component's animated fallback
+        return "";
       })(),
       status: (() => {
         if (u.role !== "doctor") return "ACTIVE";
@@ -818,6 +812,7 @@ function AdminDashboard() {
                 name={user?.name || "Admin"}
                 className="w-9 h-9 border border-slate-200 group-hover:border-cyan-300 shadow-sm text-xs"
                 alt="Admin Profile"
+                role={user?.role || "admin"}
               />
             </div>
           </div>

@@ -28,7 +28,7 @@ export async function createProfile(req, res) {
     let profileImage = "";
     if (req.file) {
       try {
-        profileImage = await uploadToImageKit(req.file);
+        profileImage = await uploadToImageKit(req.file, req);
       } catch (uploadError) {
         console.error("ImageKit upload failed during profile creation:", uploadError.message);
         // Save without image on failure instead of 500 error
@@ -49,6 +49,10 @@ export async function createProfile(req, res) {
       gradYear: gradYear ? Number(gradYear) : undefined,
       specialties,
     });
+
+    if (profileImage) {
+      await userModel.findByIdAndUpdate(req.user._id, { profileImage });
+    }
 
     const io = req.app.get("io");
     if (io) {
@@ -167,7 +171,7 @@ export async function updateProfile(req, res) {
     let profileImage;
     if (req.file) {
       try {
-        profileImage = await uploadToImageKit(req.file);
+        profileImage = await uploadToImageKit(req.file, req);
       } catch (uploadError) {
         console.error("ImageKit upload failed during profile update:", uploadError.message);
         // Retain existing image or do not update since upload failed
@@ -193,6 +197,10 @@ export async function updateProfile(req, res) {
       },
       { new: true },
     );
+
+    if (doctor && profileImage) {
+      await userModel.findByIdAndUpdate(req.user._id, { profileImage });
+    }
 
     if (!doctor) {
       return res.status(404).json({

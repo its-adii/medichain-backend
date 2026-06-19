@@ -86,11 +86,7 @@ function PatientLayout() {
     }
 
     try {
-      const res = await api.patch("/auth/me", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await api.patch("/auth/me", formData);
       setUser(res.data.user);
       setSettingsSuccess("Profile updated successfully!");
       setSettingsPassword("");
@@ -379,6 +375,7 @@ function PatientLayout() {
                   name={user?.name} 
                   className="w-8 h-8 text-[11px] shadow-sm" 
                   alt="Profile"
+                  role={user?.role || "patient"}
                 />
                 <ChevronDown 
                   size={14} 
@@ -491,6 +488,7 @@ function PatientLayout() {
                       name={user?.name} 
                       className="w-20 h-20 text-xl shadow" 
                       alt="Patient profile avatar"
+                      role={user?.role || "patient"}
                     />
                     <label className="absolute bottom-0 right-0 bg-cyan-500 text-white p-1.5 rounded-full shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center justify-center border border-white">
                       <Settings className="w-3.5 h-3.5" />

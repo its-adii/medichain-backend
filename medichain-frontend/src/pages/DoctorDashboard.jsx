@@ -309,16 +309,24 @@ function DoctorDashboard() {
 
     try {
       if (profileExists) {
-        await api.patch("/doctors/profile", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await api.patch("/doctors/profile", formData);
         setProfileSuccess("Profile updated successfully!");
+        if (res.data.doctor && res.data.doctor.profileImage) {
+          setUser(prev => ({
+            ...prev,
+            profileImage: res.data.doctor.profileImage
+          }));
+        }
       } else {
-        await api.post("/doctors/profile", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await api.post("/doctors/profile", formData);
         setProfileSuccess("Profile created successfully! You are now visible to patients.");
         setProfileExists(true);
+        if (res.data.doctor && res.data.doctor.profileImage) {
+          setUser(prev => ({
+            ...prev,
+            profileImage: res.data.doctor.profileImage
+          }));
+        }
       }
     } catch (err) {
       setProfileError(err.response?.data?.message || "Failed to save profile details.");
@@ -705,6 +713,7 @@ function DoctorDashboard() {
                 name={user?.name} 
                 className="h-9 w-9 text-xs border border-slate-200 hover:border-cyan-300 shadow-sm flex-shrink-0" 
                 alt="Dr. Avatar"
+                role="doctor"
               />
             </div>
 
@@ -806,6 +815,7 @@ function DoctorDashboard() {
                         name={user?.name} 
                         className="w-24 h-24 text-2xl border-4 border-slate-100 shadow" 
                         alt="Doctor profile avatar"
+                        role="doctor"
                       />
                       <label className="absolute bottom-0 right-0 bg-cyan-500 text-white p-2 rounded-full shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center justify-center">
                         <Camera className="w-4 h-4" />
