@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #0f172a;
+  --color-primary-container: #131b2e;
+  --color-on-primary-container: #7c839b;
+  --color-secondary: #00687a;
+  --color-secondary-container: #57dffe;
+  --color-on-secondary-container: #006172;
+  --color-accent: #14b8a6;
+  
+  --color-background: #f8f9ff;
+  --color-surface: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #45464d;
+  --color-outline: #76777d;
+  --color-outline-variant: #c6c6cd;
+  
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+  
+  --color-inverse-surface: #213145;
+  --color-inverse-on-surface: #eaf1ff;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --spacing-gutter: 24px;
+  --spacing-max-width: 1440px;
+
+  --font-size-display-lg: 48px;
+  --font-size-headline-lg: 32px;
+  --font-size-headline-lg-mobile: 24px;
+  --font-size-headline-md: 24px;
+  --font-size-title-lg: 20px;
+  --font-size-title-md: 16px;
+  --font-size-body-lg: 18px;
+  --font-size-body-md: 16px;
+  --font-size-body-sm: 14px;
+  --font-size-label-md: 12px;
+  --font-size-code-md: 14px;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-sans text-on-surface bg-background antialiased transition-colors duration-300;
+  }
+}
+
+/* Typography Utility Classes matching Stitch specification */
+.font-display-lg {
+  font-family: Inter, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 56px;
+  letter-spacing: -0.02em;
+}
+.font-headline-lg {
+  font-family: Inter, sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+.font-headline-md {
+  font-family: Inter, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+}
+.font-title-lg {
+  font-family: Inter, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+.font-title-md {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+.font-body-lg {
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+}
+.font-body-md {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+.font-body-sm {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.font-label-md {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+}
+.font-code-md {
+  font-family: JetBrains Mono, monospace;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+@layer components {
+  .glass {
+    @apply bg-surface-container-lowest/70 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .hero-gradient {
+    background: radial-gradient(circle at top left, rgba(0, 104, 122, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.05) 0%, transparent 40%);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-linear-to-r from-secondary to-accent;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .clinical-shadow { 
+    box-shadow: 0px 2px 4px rgba(15, 23, 42, 0.05); 
+  }
+}
+
+/* Custom Browser Autofill Style Override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #0f172a !important; /* matches text-slate-900 */
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important; /* matches dark:bg-slate-900 */
+}
+
