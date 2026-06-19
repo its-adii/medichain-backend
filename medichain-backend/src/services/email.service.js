@@ -11,9 +11,9 @@ async function getTransporter() {
   const smtpPass = process.env.SMTP_PASS;
 
   if (smtpHost && smtpUser && smtpPass) {
-    const isGmail = smtpHost.toLowerCase().includes("gmail");
+    const isGmailWithoutPort = smtpHost.toLowerCase().includes("gmail") && !process.env.SMTP_PORT;
     transporter = nodemailer.createTransport(
-      isGmail
+      isGmailWithoutPort
         ? {
             service: "gmail",
             auth: {
@@ -29,6 +29,10 @@ async function getTransporter() {
               user: smtpUser,
               pass: smtpPass,
             },
+            tls: {
+              // Do not fail on invalid certificates (optional helper but good for robustness)
+              rejectUnauthorized: false
+            }
           }
     );
   } else {
