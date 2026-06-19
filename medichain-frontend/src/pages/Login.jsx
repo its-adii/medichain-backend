@@ -58,18 +58,6 @@ function Login() {
   const reqNumbers = /\d/.test(newPassword);
   const isResetValid = reqLength && reqSymbols && reqCase && reqNumbers && newPassword === confirmPassword;
 
-  // Parse OIDC hash on mount
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash && hash.includes("id_token=")) {
-      const params = new URLSearchParams(hash.substring(1)); // Remove the leading '#'
-      const idToken = params.get("id_token");
-      if (idToken) {
-        handleGoogleLogin(idToken);
-      }
-    }
-  }, []);
-
   async function handleGoogleLogin(idToken) {
     setLoading(true);
     setError("");
@@ -87,6 +75,18 @@ function Login() {
       setLoading(false);
     }
   }
+
+  // Parse OIDC hash on mount
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.includes("id_token=")) {
+      const params = new URLSearchParams(hash.substring(1)); // Remove the leading '#'
+      const idToken = params.get("id_token");
+      if (idToken) {
+        handleGoogleLogin(idToken);
+      }
+    }
+  }, []);
 
   async function handleLogin(e) {
     e.preventDefault();
