@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import config from "../config/config.js";
 import { sendEmail } from "../services/email.service.js";
-import { getVerificationEmailTemplate, getPasswordResetEmailTemplate } from "../services/emailTemplates.js";
+import { getVerificationEmailTemplate, getPasswordResetEmailTemplate, getWelcomeEmailTemplate } from "../services/emailTemplates.js";
 
 
 export async function register(req, res) {
@@ -496,6 +496,13 @@ export async function googleLogin(req, res) {
         isEmailVerified: true,
         profileImage,
       });
+
+      // Send Welcome Email
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to MediChain - Account Confirmed",
+        html: getWelcomeEmailTemplate(user.name, user.role),
+      });
     } else {
       // If user exists, ensure they are flagged as Google user/verified
       if (!user.isGoogleUser) {
@@ -581,6 +588,13 @@ export async function verifyEmail(req, res) {
     user.verificationOtp = null;
     user.verificationOtpExpiry = null;
     await user.save();
+
+    // Send Welcome Email
+    await sendEmail({
+      to: user.email,
+      subject: "Welcome to MediChain - Account Verified",
+      html: getWelcomeEmailTemplate(user.name, user.role),
+    });
 
     res.status(200).json({
       message: "Email verified successfully",
