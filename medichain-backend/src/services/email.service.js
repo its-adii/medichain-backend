@@ -10,6 +10,8 @@ async function getTransporter() {
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
 
+  console.log(`[SMTP Config] Host: ${smtpHost}, Port: ${smtpPort}, User: ${smtpUser}`);
+
   if (smtpHost && smtpUser && smtpPass) {
     const isGmail = smtpHost.toLowerCase().includes("gmail");
     transporter = nodemailer.createTransport(
@@ -39,10 +41,11 @@ async function getTransporter() {
 }
 
 export async function sendEmail({ to, subject, text, html }) {
+  console.log(`[Email Service] Start sending email to: ${to}, Subject: "${subject}"`);
   try {
     const client = await getTransporter();
     if (!client) {
-      console.warn("Email service not configured. Please check SMTP_USER and SMTP_PASS in your .env file.");
+      console.warn("[Email Service] SMTP transporter not configured. Skipping email send.");
       return;
     }
 
@@ -54,9 +57,9 @@ export async function sendEmail({ to, subject, text, html }) {
       html,
     });
     
-    console.log(`Message sent successfully via SMTP: ${info.messageId}`);
+    console.log(`[Email Service] Success! Message sent: ${info.messageId}`);
     return info;
   } catch (error) {
-    console.error("Email sending failed via SMTP:", error);
+    console.error("[Email Service] ERROR sending email:", error);
   }
 }
