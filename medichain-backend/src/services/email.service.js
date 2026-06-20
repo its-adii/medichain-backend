@@ -1,46 +1,62 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-let resend;
+let transporter;
 
-function getResendClient() {
-  if (resend) return resend;
+async function getTransporter() {
+  if (transporter) return transporter;
 
-  const resendApiKey = process.env.RESEND_API_KEY;
-  if (!resendApiKey) {
-    console.warn("WARNING: RESEND_API_KEY is not defined in the environment variables. Email service is disabled or will fail.");
-    return null;
+  const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+  const smtpPort = process.env.SMTP_PORT || 587;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+
+  if (smtpHost && smtpUser && smtpPass) {
+    const isGmail = smtpHost.toLowerCase().includes("gmail");
+    transporter = nodemailer.createTransport(
+      isGmail
+        ? {
+            service: "gmail",
+            auth: {
+              user: smtpUser,
+              pass: smtpPass,
+            },
+          }
+        : {
+            host: smtpHost,
+            port: parseInt(smtpPort),
+            secure: smtpPort == 465,
+            auth: {
+              user: smtpUser,
+              pass: smtpPass,
+            },
+            tls: {
+              rejectUnauthorized: false
+            }
+          }
+    );
   }
-
-  resend = new Resend(resendApiKey);
-  return resend;
+  return transporter;
 }
 
 export async function sendEmail({ to, subject, text, html }) {
   try {
-    const client = getResendClient();
+    const client = await getTransporter();
     if (!client) {
-      console.warn("Skipping email send: Resend is not configured (missing API key).");
+      console.warn("Email service not configured. Please check SMTP_USER and SMTP_PASS in your .env file.");
       return;
     }
 
-    const from = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-
-    const response = await client.emails.send({
-      from,
+    const info = await client.sendMail({
+      from: `"MediChain" <${process.env.SMTP_USER || "noreply@medichain.com"}>`,
       to,
       subject,
       text,
       html,
     });
-
-    if (response.error) {
-      console.error("Email sending failed via Resend API error:", response.error);
-      return response;
-    }
-
-    console.log(`Message sent via Resend. ID: ${response.data?.id}`);
-    return response.data;
+    
+    console.log(`Message sent successfully via SMTP: ${info.messageId}`);
+    return info;
   } catch (error) {
-    console.error("Email sending failed via Resend catch block:", error);
+    console.error("Email sending failed via SMTP:", error);
   }
 }
