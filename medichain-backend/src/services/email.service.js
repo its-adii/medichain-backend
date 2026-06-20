@@ -1,4 +1,10 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
+
+// Force Node.js to prefer IPv4 DNS resolution over IPv6 to prevent ENETUNREACH errors on cloud hosts like Render
+if (dns && typeof dns.setDefaultResultOrder === "function") {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 let transporter;
 
@@ -10,32 +16,24 @@ async function getTransporter() {
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
 
-  console.log(`[SMTP Config] Host: ${smtpHost}, Port: ${smtpPort}, User: ${smtpUser}`);
+  console.log(`[SMTP Config] Connecting to ${smtpHost}:${smtpPort} as ${smtpUser} (IPv4 preferred)`);
 
   if (smtpHost && smtpUser && smtpPass) {
-    const isGmail = smtpHost.toLowerCase().includes("gmail");
-    transporter = nodemailer.createTransport(
-      isGmail
-        ? {
-            service: "gmail",
-            auth: {
-              user: smtpUser,
-              pass: smtpPass,
-            },
-          }
-        : {
-            host: smtpHost,
-            port: parseInt(smtpPort),
-            secure: smtpPort == 465,
-            auth: {
-              user: smtpUser,
-              pass: smtpPass,
-            },
-            tls: {
-              rejectUnauthorized: false
-            }
-          }
-    );
+    // Avoid using "service: gmail" shortcut as it forces port 465 and secure: true,
+    // which fails on containers without IPv6 routing. Instead, configure manually.
+    transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: parseInt(smtpPort),
+      secure: parseInt(smtpPort) === 465, // true for 465, false for 587 (STARTTLS)
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+      tls: {
+        // Do not fail on invalid certificates
+        rejectUnauthorized: false
+      }
+    });
   }
   return transporter;
 }
