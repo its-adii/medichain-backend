@@ -1,74 +1,37 @@
-import nodemailer from "nodemailer";
-import dns from "dns";
-import { promisify } from "util";
-
-const resolve4 = promisify(dns.resolve4);
-
-let transporter;
-
-async function getTransporter() {
-  if (transporter) return transporter;
-
-  const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-  const smtpPort = process.env.SMTP_PORT || 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-
-  console.log(`[SMTP Config] Connecting to ${smtpHost}:${smtpPort} as ${smtpUser} (Strict IPv4 Lookup)`);
-
-  if (smtpHost && smtpUser && smtpPass) {
-    let hostIp = smtpHost;
-    
-    try {
-      const addresses = await resolve4(smtpHost);
-      if (addresses && addresses.length > 0) {
-        hostIp = addresses[0];
-        console.log(`[SMTP Config] Resolved ${smtpHost} to IPv4: ${hostIp}`);
-      }
-    } catch (err) {
-      console.warn(`[SMTP Config] Failed to resolve IPv4 for ${smtpHost}. Error:`, err.message);
-    }
-
-    transporter = nodemailer.createTransport({
-      host: hostIp,
-      port: parseInt(smtpPort),
-      secure: parseInt(smtpPort) === 465, // true for 465, false for 587
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-      tls: {
-        rejectUnauthorized: false,
-        servername: smtpHost // Required so TLS doesn't fail when connecting via IP
-      },
-      connectionTimeout: 10000, // 10s connection timeout
-      greetingTimeout: 10000,
-      socketTimeout: 10000
-    });
-  }
-  return transporter;
-}
-
 export async function sendEmail({ to, subject, text, html }) {
-  console.log(`[Email Service] Start sending email to: ${to}, Subject: "${subject}"`);
+  console.log(`[Email Service] Start sending email via Google Apps Script API to: ${to}, Subject: "${subject}"`);
+  
+  // We use the environment variables, but provide the hardcoded URL/Secret as fallback 
+  // so it works instantly without you having to update .env on Render first!
+  const scriptUrl = process.env.GMAIL_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbxv0Z0_WAFuBl9ZI42sYL-Pf38bnHXHRHi_ZrRgeT0o84b-npTZYCrLr5RuCkD979L7-w/exec";
+  const secretKey = process.env.GMAIL_SCRIPT_SECRET || "medichain_secret_key_123";
+
   try {
-    const client = await getTransporter();
-    if (!client) {
-      console.warn("[Email Service] SMTP transporter not configured. Skipping email send.");
-      return;
+    const response = await fetch(scriptUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        secret: secretKey,
+        to: to,
+        subject: subject,
+        text: text || "",
+        html: html || ""
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      console.error("[Email Service] Google Apps Script API Error:", result.error);
+      return { error: result.error };
     }
 
-    const info = await client.sendMail({
-      from: `"MediChain" <${process.env.SMTP_USER || "noreply@medichain.com"}>`,
-      to,
-      subject,
-      text,
-      html,
-    });
-    
-    console.log(`[Email Service] Success! Message sent: ${info.messageId}`);
-    return info;
+    console.log(`[Email Service] Success! Message sent securely via HTTP API.`);
+    return { success: true };
   } catch (error) {
-    console.error("[Email Service] ERROR sending email:", error);
+    console.error("[Email Service] ERROR sending email via HTTP API:", error);
+    return { error: error.message };
   }
 }
