@@ -65,7 +65,7 @@ export async function bookAppointment(req, res) {
       : date || "N/A";
 
     // 1. Patient Pending Request Email
-    sendEmail({
+    await sendEmail({
       to: patientUser.email,
       subject: "Appointment Requested (Pending) - MediChain",
       html: getAppointmentRequestTemplate(
@@ -79,7 +79,7 @@ export async function bookAppointment(req, res) {
 
     // 2. Doctor Alert
     if (doctor.user && doctor.user.email) {
-      sendEmail({
+      await sendEmail({
         to: doctor.user.email,
         subject: "New Appointment Request - MediChain",
         html: getDoctorAppointmentAlertTemplate(
@@ -97,6 +97,7 @@ export async function bookAppointment(req, res) {
       appointment,
     });
   } catch (error) {
+    console.error("Error in bookAppointment:", error);
     res.status(500).json({
       message: error.message,
     });
@@ -220,7 +221,7 @@ export async function updateAppointmentStatus(req, res) {
 
         // Email Alert to Doctor
         if (doctor.user.email) {
-          sendEmail({
+          await sendEmail({
             to: doctor.user.email,
             subject: "Appointment Cancelled by Patient - MediChain",
             html: getAppointmentCancelledTemplate(
@@ -235,7 +236,7 @@ export async function updateAppointmentStatus(req, res) {
 
         // Email Alert to Patient (Self Confirmation)
         if (req.user.email) {
-          sendEmail({
+          await sendEmail({
             to: req.user.email,
             subject: "Appointment Cancelled - MediChain",
             html: getAppointmentCancelledTemplate(
@@ -313,7 +314,7 @@ export async function updateAppointmentStatus(req, res) {
             );
           }
 
-          sendEmail({
+          await sendEmail({
             to: appointment.patient.email,
             subject,
             html: htmlContent
@@ -330,7 +331,7 @@ export async function updateAppointmentStatus(req, res) {
               year: "numeric"
             }) : "N/A";
 
-            sendEmail({
+            await sendEmail({
               to: doctorEmail,
               subject: "Appointment Cancelled by Admin - MediChain",
               html: getAppointmentCancelledTemplate(
@@ -351,6 +352,7 @@ export async function updateAppointmentStatus(req, res) {
       appointment,
     });
   } catch (error) {
+    console.error("Error in updateAppointmentStatus:", error);
     res.status(500).json({
       message: error.message,
     });
