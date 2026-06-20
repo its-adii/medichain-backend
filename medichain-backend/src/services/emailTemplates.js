@@ -1,125 +1,184 @@
 // Helper function to return the common header and styles for premium emails
-function getEmailHeader(title, accentColor = "#0891b2", gradientStart = "#06b6d4", gradientEnd = "#0891b2") {
+function getEmailHeader(title, accentColor = "#2563eb", accentLight = "#eff6ff") {
   return `
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${title}</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.03); }
-          100% { transform: scale(1); }
-        }
-        @keyframes subtleSlide {
-          from { transform: translateX(-5px); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .animated-card {
-          animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .animated-btn {
-          transition: all 0.3s ease;
-        }
-        .animated-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(8, 145, 178, 0.3);
-        }
-        .pulse-element {
-          animation: pulse 2s infinite ease-in-out;
-        }
-        
-        @media only screen and (max-width: 600px) {
-          .container {
-            width: 100% !important;
-            padding: 15px !important;
-          }
-          .otp-code {
-            font-size: 28px !important;
-            letter-spacing: 4px !important;
-          }
-        }
-      </style>
-    </head>
-    <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
-      <div style="background-color: #f8fafc; padding: 40px 20px;">
-        <table class="container" align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 24px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; overflow: hidden; border-collapse: collapse;">
-          <!-- Top Gradient Banner -->
-          <tr>
-            <td style="background: linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%); padding: 35px 40px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">MediChain</h1>
-              <p style="color: rgba(255,255,255,0.85); font-size: 11px; margin: 6px 0 0 0; text-transform: uppercase; font-weight: 700; letter-spacing: 2px;">Decentralized & Secure Medical Registry</p>
-            </td>
-          </tr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <!--[if mso]>
+  <style type="text/css">
+    body, table, td, a, p, h1, h2, h3 { font-family: Helvetica, Arial, sans-serif !important; }
+  </style>
+  <![endif]-->
+  <style>
+    /* Reset & Base Setup */
+    body { margin: 0; padding: 0; width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    
+    /* Responsive Styles */
+    @media only screen and (max-width: 600px) {
+      .main-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+      }
+      .wrapper-bg {
+        padding: 0 !important;
+      }
+      .header-cell {
+        padding: 30px 20px !important;
+      }
+      .content-cell {
+        padding: 30px 20px !important;
+      }
+      .footer-cell {
+        padding: 30px 20px !important;
+      }
+      .responsive-block {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .responsive-block-label {
+        padding-bottom: 4px !important;
+      }
+      .responsive-block-value {
+        padding-bottom: 16px !important;
+      }
+      .otp-text {
+        font-size: 32px !important;
+        letter-spacing: 6px !important;
+      }
+      .hide-mobile {
+        display: none !important;
+      }
+      .btn {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937; line-height: 1.6; -webkit-font-smoothing: antialiased;">
+  <div class="wrapper-bg" style="background-color: #f4f7f6; padding: 40px 15px;">
+    <!-- Main Email Container -->
+    <table class="main-container" align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;">
+      
+      <!-- Brand Header -->
+      <tr>
+        <td class="header-cell" style="background-color: #ffffff; padding: 30px 40px; text-align: center; border-bottom: 1px solid #f3f4f6;">
+          <h1 style="color: ${accentColor}; font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">Medi<span style="color: #111827;">Chain</span></h1>
+          <p style="color: #6b7280; font-size: 12px; margin: 4px 0 0 0; text-transform: uppercase; font-weight: 600; letter-spacing: 1.5px;">Premium Healthcare Network</p>
+        </td>
+      </tr>
+
+      <!-- Hero Header (Optional Accent Bar) -->
+      <tr>
+        <td style="height: 4px; background: ${accentColor};"></td>
+      </tr>
+
+      <!-- Body Content -->
+      <tr>
+        <td class="content-cell" style="padding: 40px;">
   `;
 }
 
 function getEmailFooter() {
   return `
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #f8fafc; padding: 30px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
-              <p style="color: #64748b; font-size: 13px; line-height: 1.6; margin: 0 0 10px 0;">Need support? Reply directly to this email or visit our help center.</p>
-              <p style="color: #94a3b8; font-size: 11px; margin: 0;">&copy; ${new Date().getFullYear()} MediChain Registry Corp. All rights reserved.</p>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </body>
+        </td>
+      </tr>
+      
+      <!-- Footer -->
+      <tr>
+        <td class="footer-cell" style="background-color: #f9fafb; padding: 35px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+              <td style="padding-bottom: 15px;">
+                <h4 style="margin: 0; color: #111827; font-size: 16px; font-weight: 700; letter-spacing: -0.3px;">MediChain</h4>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom: 20px;">
+                <p style="color: #6b7280; font-size: 13px; line-height: 1.6; margin: 0;">This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="border-top: 1px solid #e5e7eb; padding-top: 20px;">
+                <p style="color: #9ca3af; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} MediChain Healthcare. All rights reserved.</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
   `;
 }
 
 export function getVerificationEmailTemplate(name, otp) {
   return `
-    ${getEmailHeader("Verify your email address", "#0891b2", "#06b6d4", "#0891b2")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0;">Verify your email address</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${name}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Thank you for registering with MediChain. To activate your account and start secure healthcare consultations, please verify your email by entering this 6-digit verification code. This code will expire in <strong>15 minutes</strong>.</p>
-        
-        <div style="text-align: center; margin: 30px 0; padding: 25px; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-          <span class="otp-code pulse-element" style="font-family: 'Courier New', Courier, monospace; font-size: 38px; font-weight: 800; color: #0f172a; letter-spacing: 10px; display: inline-block;">${otp}</span>
-        </div>
-        
-        <div style="background-color: #f0fdfa; border-left: 4px solid #0d9488; border-radius: 8px; padding: 16px; margin-bottom: 25px;">
-          <p style="color: #0f766e; font-size: 13px; line-height: 1.5; margin: 0;"><strong>Security Reminder:</strong> Never share this code with anyone. MediChain staff will never ask for your verification code or password.</p>
-        </div>
-        
-        <p style="color: #64748b; font-size: 12px; line-height: 1.5; margin: 25px 0 0 0;">If you did not initiate this registration, you can safely disregard this email.</p>
-      </td>
-    </tr>
+    ${getEmailHeader("Verify your email address", "#0ea5e9", "#e0f2fe")}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Verify your email address</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi <strong>${name}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">Thank you for registering with MediChain. To complete your setup and ensure the security of your account, please use the 6-digit verification code below. This code will expire in 15 minutes.</p>
+    
+    <!-- OTP Box -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+      <tr>
+        <td align="center" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px;">
+          <span class="otp-text" style="font-family: 'Courier New', Courier, monospace; font-size: 36px; font-weight: 700; color: #0f172a; letter-spacing: 12px; display: inline-block; margin-left: 12px;">${otp}</span>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Security Notice -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 0 8px 8px 0;">
+          <p style="color: #92400e; font-size: 13px; margin: 0; line-height: 1.5;"><strong>Security Tip:</strong> Never share this code. MediChain staff will never ask for it.</p>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="color: #9ca3af; font-size: 13px; margin: 30px 0 0 0;">If you didn't request this email, you can safely ignore it.</p>
     ${getEmailFooter()}
   `;
 }
 
 export function getPasswordResetEmailTemplate(name, otp) {
   return `
-    ${getEmailHeader("Password recovery passcode", "#e11d48", "#f43f5e", "#e11d48")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0;">Reset your password</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${name}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">We received a request to reset your password for your MediChain account. Please use the following 6-digit verification code to complete the process. This code is valid for <strong>15 minutes</strong>.</p>
-        
-        <div style="text-align: center; margin: 30px 0; padding: 25px; background: linear-gradient(180deg, #fff5f5 0%, #ffe3e3 100%); border-radius: 20px; border: 1px solid #ffd4d4; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-          <span class="otp-code pulse-element" style="font-family: 'Courier New', Courier, monospace; font-size: 38px; font-weight: 800; color: #b91c1c; letter-spacing: 10px; display: inline-block;">${otp}</span>
-        </div>
-        
-        <div style="background-color: #fff1f2; border-left: 4px solid #e11d48; border-radius: 8px; padding: 16px; margin-bottom: 25px;">
-          <p style="color: #9f1239; font-size: 13px; line-height: 1.5; margin: 0;"><strong>Didn't request this?</strong> If you did not request a password reset, please change your security settings or contact support immediately to lock your account.</p>
-        </div>
-      </td>
-    </tr>
+    ${getEmailHeader("Reset your password", "#ef4444", "#fee2e2")}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Reset Your Password</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi <strong>${name}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">We received a request to reset your password. Enter the following 6-digit recovery code to regain access to your account. This code is valid for 15 minutes.</p>
+    
+    <!-- OTP Box -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+      <tr>
+        <td align="center" style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 25px;">
+          <span class="otp-text" style="font-family: 'Courier New', Courier, monospace; font-size: 36px; font-weight: 700; color: #b91c1c; letter-spacing: 12px; display: inline-block; margin-left: 12px;">${otp}</span>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Security Notice -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td style="background-color: #f9fafb; border-left: 4px solid #6b7280; padding: 16px; border-radius: 0 8px 8px 0;">
+          <p style="color: #4b5563; font-size: 13px; margin: 0; line-height: 1.5;"><strong>Didn't request a reset?</strong> If you did not make this request, please contact support immediately to lock your account.</p>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
@@ -127,106 +186,133 @@ export function getPasswordResetEmailTemplate(name, otp) {
 export function getWelcomeEmailTemplate(name, role) {
   const roleName = role ? role.charAt(0).toUpperCase() + role.slice(1) : "Member";
   return `
-    ${getEmailHeader("Welcome to MediChain!", "#0891b2", "#06b6d4", "#0891b2")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <div style="text-align: center; margin-bottom: 25px;">
-          <span style="font-size: 48px;">🎉</span>
-        </div>
-        <h2 style="color: #0f172a; font-size: 24px; font-weight: 800; margin: 0 0 12px 0; text-align: center; color: #0891b2;">Welcome to MediChain!</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${name}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Your email address has been successfully verified, and your <strong>${roleName}</strong> account is fully activated. You are now part of a secure, modern network designed to protect medical records and streamline healthcare communications.</p>
-        
-        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 30px;">
-          <h3 style="color: #0f172a; font-size: 14px; font-weight: 700; margin: 0 0 12px 0;">Here's what you can do right now:</h3>
-          <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13.5px; line-height: 1.7;">
-            <li style="margin-bottom: 6px;">Update your user details and medical specializations (for doctors)</li>
-            <li style="margin-bottom: 6px;">Manage, book, and track appointments in real-time</li>
-            <li style="margin-bottom: 6px;">Access your secure healthcare data vault with full privacy control</li>
-          </ul>
-        </div>
-        
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:5173/login" class="animated-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: #ffffff; padding: 14px 32px; border-radius: 14px; text-decoration: none; font-size: 14.5px; font-weight: 700; display: inline-block; box-shadow: 0 5px 15px rgba(8, 145, 178, 0.2);">Access Dashboard</a>
-        </div>
-      </td>
-    </tr>
+    ${getEmailHeader("Welcome to MediChain!", "#10b981", "#d1fae5")}
+    
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span style="font-size: 48px; line-height: 1;">🎉</span>
+    </div>
+    
+    <h2 style="color: #111827; font-size: 24px; font-weight: 800; margin: 0 0 16px 0; text-align: center;">Welcome to MediChain</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0; text-align: center;">Hi <strong>${name}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0; text-align: center;">Your email is verified and your <strong>${roleName}</strong> account is fully active. You're now part of the most secure network for healthcare communication and records.</p>
+    
+    <!-- Quick Start Card -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 35px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+      <tr>
+        <td style="padding: 24px;">
+          <h3 style="color: #0f172a; font-size: 16px; font-weight: 700; margin: 0 0 16px 0;">What to do next:</h3>
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+              <td width="24" valign="top" style="padding-bottom: 12px;"><span style="color: #10b981;">✓</span></td>
+              <td style="padding-bottom: 12px; color: #475569; font-size: 14px;">Complete your profile details</td>
+            </tr>
+            <tr>
+              <td width="24" valign="top" style="padding-bottom: 12px;"><span style="color: #10b981;">✓</span></td>
+              <td style="padding-bottom: 12px; color: #475569; font-size: 14px;">Explore your secure dashboard</td>
+            </tr>
+            <tr>
+              <td width="24" valign="top"><span style="color: #10b981;">✓</span></td>
+              <td style="color: #475569; font-size: 14px;">Manage appointments effortlessly</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Action Button -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td align="center">
+          <a href="https://medichain-frontend-rose.vercel.app/login" class="btn" style="background-color: #10b981; color: #ffffff; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600; display: inline-block;">Go to Dashboard</a>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
 
 export function getAppointmentRequestTemplate(patientName, doctorName, date, time, reason) {
   return `
-    ${getEmailHeader("Appointment Request Received", "#d97706", "#f59e0b", "#d97706")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0;">Appointment Pending Confirmation</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${patientName}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Your appointment request with <strong>Dr. ${doctorName}</strong> has been received. The appointment is currently pending confirmation from the clinic. We will notify you once it's confirmed.</p>
-        
-        <div style="background: linear-gradient(180deg, #fefdf0 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 20px; padding: 25px; margin-bottom: 25px;">
-          <h3 style="color: #92400e; font-size: 15px; font-weight: 700; margin: 0 0 15px 0; border-bottom: 1px solid rgba(217, 119, 6, 0.15); padding-bottom: 10px;">Booking Details</h3>
-          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 14px; color: #451a03;">
+    ${getEmailHeader("Appointment Requested", "#f59e0b", "#fef3c7")}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Appointment Pending</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">Hi <strong>${patientName}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">Your appointment request with <strong>Dr. ${doctorName}</strong> has been sent to the clinic. It is currently pending confirmation. We will notify you once the doctor reviews it.</p>
+    
+    <!-- Details Table -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+      <tr>
+        <td style="background-color: #f9fafb; padding: 16px 20px; border-bottom: 1px solid #e5e7eb;">
+          <h3 style="margin: 0; color: #374151; font-size: 15px; font-weight: 600;">Booking Request Details</h3>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px;">
+          <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; color: #4b5563;">
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;" width="100">Doctor:</td>
-              <td style="padding: 6px 0;">Dr. ${doctorName}</td>
+              <td class="responsive-block responsive-block-label" width="120" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Doctor</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">Dr. ${doctorName}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Date:</td>
-              <td style="padding: 6px 0;">${date}</td>
+              <td class="responsive-block responsive-block-label" width="120" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Date</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${date}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Time:</td>
-              <td style="padding: 6px 0;">${time}</td>
+              <td class="responsive-block responsive-block-label" width="120" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Time</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${time}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600; vertical-align: top;">Reason:</td>
-              <td style="padding: 6px 0; line-height: 1.4;">${reason}</td>
+              <td class="responsive-block responsive-block-label" width="120" valign="top" style="color: #6b7280; font-weight: 500;">Reason</td>
+              <td class="responsive-block responsive-block-value" valign="top" style="line-height: 1.5;">${reason}</td>
             </tr>
           </table>
-        </div>
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
 
 export function getAppointmentConfirmedTemplate(patientName, doctorName, date, time) {
   return `
-    ${getEmailHeader("Appointment Confirmed!", "#059669", "#10b981", "#059669")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <span style="font-size: 42px;">📅</span>
-        </div>
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0; text-align: center; color: #059669;">Your Appointment is Confirmed</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${patientName}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Great news! Your booking request with <strong>Dr. ${doctorName}</strong> has been officially confirmed. Please review the appointment details below.</p>
-        
-        <div style="background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #a7f3d0; border-radius: 20px; padding: 25px; margin-bottom: 25px;">
-          <h3 style="color: #065f46; font-size: 15px; font-weight: 700; margin: 0 0 15px 0; border-bottom: 1px solid rgba(5, 150, 105, 0.15); padding-bottom: 10px;">Appointment Summary</h3>
-          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 14px; color: #064e3b;">
+    ${getEmailHeader("Appointment Confirmed", "#10b981", "#d1fae5")}
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+      <span style="font-size: 40px; line-height: 1;">✅</span>
+    </div>
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0; text-align: center;">Appointment Confirmed</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">Hi <strong>${patientName}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">Great news! Your appointment with <strong>Dr. ${doctorName}</strong> has been officially confirmed by the clinic.</p>
+    
+    <!-- Details Table -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+      <tr>
+        <td style="background-color: #f9fafb; padding: 16px 20px; border-bottom: 1px solid #e5e7eb;">
+          <h3 style="margin: 0; color: #374151; font-size: 15px; font-weight: 600;">Confirmed Details</h3>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px;">
+          <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; color: #4b5563;">
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;" width="100">Doctor:</td>
-              <td style="padding: 6px 0;">Dr. ${doctorName}</td>
+              <td class="responsive-block responsive-block-label" width="120" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Doctor</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">Dr. ${doctorName}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Date:</td>
-              <td style="padding: 6px 0;">${date}</td>
+              <td class="responsive-block responsive-block-label" width="120" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Date</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${date}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Time:</td>
-              <td style="padding: 6px 0;">${time}</td>
+              <td class="responsive-block responsive-block-label" width="120" style="color: #6b7280; font-weight: 500;">Time</td>
+              <td class="responsive-block responsive-block-value" style="font-weight: 600; color: #111827;">${time}</td>
             </tr>
           </table>
-        </div>
-        
-        <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin: 25px 0 0 0; text-align: center;">Please arrive 10 minutes prior to your scheduled slot. Log into your dashboard to reschedule if necessary.</p>
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="color: #6b7280; font-size: 14px; margin: 30px 0 0 0; text-align: center;">Please arrive 10-15 minutes prior to your scheduled time.</p>
     ${getEmailFooter()}
   `;
 }
@@ -234,20 +320,21 @@ export function getAppointmentConfirmedTemplate(patientName, doctorName, date, t
 export function getAppointmentCancelledTemplate(recipientName, partnerName, role, date, time) {
   const partnerLabel = role === "doctor" ? `patient <strong>${partnerName}</strong>` : `Dr. <strong>${partnerName}</strong>`;
   return `
-    ${getEmailHeader("Appointment Cancelled", "#e11d48", "#f43f5e", "#e11d48")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0;">Appointment Cancellation Alert</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${recipientName}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Please note that the upcoming appointment on <strong>${date}</strong> at <strong>${time}</strong> has been cancelled by ${partnerLabel}.</p>
-        
-        <div style="background-color: #fff5f5; border: 1px solid #fed7d7; border-radius: 16px; padding: 20px; margin-bottom: 25px;">
-          <p style="margin: 0; color: #c53030; font-size: 14px; font-weight: 600;">Status: Cancelled</p>
-          <p style="margin: 5px 0 0 0; color: #742a2a; font-size: 13.5px; line-height: 1.4;">If this cancellation was unintended, or you would like to book a new appointment, you can do so through the MediChain patient portal.</p>
-        </div>
-      </td>
-    </tr>
+    ${getEmailHeader("Appointment Cancelled", "#ef4444", "#fee2e2")}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Appointment Cancellation</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">Hi <strong>${recipientName}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">Please note that the upcoming appointment on <strong>${date}</strong> at <strong>${time}</strong> has been cancelled by ${partnerLabel}.</p>
+    
+    <!-- Status Notice -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 16px; border-radius: 0 8px 8px 0;">
+          <p style="color: #991b1b; font-size: 14px; font-weight: 600; margin: 0 0 4px 0;">Status: Cancelled</p>
+          <p style="color: #991b1b; font-size: 13px; margin: 0; line-height: 1.5;">You can easily book a new appointment or manage your schedule via your dashboard.</p>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
@@ -256,25 +343,23 @@ export function getConsultationCompletedTemplate(patientName, doctorName, date, 
   let rxHtml = "";
   if (prescriptions && prescriptions.length > 0) {
     rxHtml = `
-      <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin: 25px 0 12px 0;">💊 Rx Prescription</h3>
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13.5px;">
+      <h3 style="color: #111827; font-size: 16px; font-weight: 700; margin: 30px 0 16px 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">💊 Prescriptions</h3>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
         <thead>
-          <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
-            <th style="padding: 12px 10px; font-weight: 700; color: #475569;">Medicine Name</th>
-            <th style="padding: 12px 10px; font-weight: 700; color: #475569;">Dosage & Frequency</th>
-            <th style="padding: 12px 10px; font-weight: 700; color: #475569;">Duration</th>
-            <th style="padding: 12px 10px; font-weight: 700; color: #475569; text-align: center;">Refill</th>
+          <tr>
+            <th align="left" style="padding: 12px 10px; font-weight: 600; color: #4b5563; background-color: #f9fafb; border-radius: 6px 0 0 6px;">Medicine</th>
+            <th align="left" style="padding: 12px 10px; font-weight: 600; color: #4b5563; background-color: #f9fafb;">Dosage</th>
+            <th align="center" style="padding: 12px 10px; font-weight: 600; color: #4b5563; background-color: #f9fafb; border-radius: 0 6px 6px 0;">Duration</th>
           </tr>
         </thead>
         <tbody>
     `;
     prescriptions.forEach((p) => {
       rxHtml += `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 12px 10px; font-weight: 600; color: #0f172a;">${p.medicineName}</td>
-          <td style="padding: 12px 10px; color: #334155;">${p.dosage}</td>
-          <td style="padding: 12px 10px; color: #334155;">${p.duration || "N/A"}</td>
-          <td style="padding: 12px 10px; text-align: center; color: #334155;">${p.refillable ? "Yes" : "No"}</td>
+        <tr>
+          <td style="padding: 12px 10px; font-weight: 600; color: #111827; border-bottom: 1px solid #f3f4f6;">${p.medicineName}</td>
+          <td style="padding: 12px 10px; color: #4b5563; border-bottom: 1px solid #f3f4f6;">${p.dosage}</td>
+          <td align="center" style="padding: 12px 10px; color: #4b5563; border-bottom: 1px solid #f3f4f6;">${p.duration || "-"}</td>
         </tr>
       `;
     });
@@ -287,86 +372,93 @@ export function getConsultationCompletedTemplate(patientName, doctorName, date, 
   let labsHtml = "";
   if (labOrders && labOrders.length > 0) {
     labsHtml = `
-      <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin: 25px 0 12px 0;">🔬 Lab Orders</h3>
-      <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 14px; line-height: 1.6; margin-bottom: 25px;">
+      <h3 style="color: #111827; font-size: 16px; font-weight: 700; margin: 30px 0 16px 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">🔬 Lab Orders</h3>
+      <ul style="margin: 0; padding: 0 0 0 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
     `;
     labOrders.forEach((l) => {
-      labsHtml += `<li style="margin-bottom: 6px;"><strong>${l.testName}</strong></li>`;
+      labsHtml += `<li><strong>${l.testName}</strong></li>`;
     });
     labsHtml += `</ul>`;
   }
 
   return `
-    ${getEmailHeader("Consultation Summary", "#0891b2", "#06b6d4", "#0891b2")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0; color: #0891b2;">Consultation Visit Summary</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${patientName}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Your medical consultation with <strong>Dr. ${doctorName}</strong> has been completed. The records and prescription summary have been saved securely to your dashboard.</p>
-        
-        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; margin-bottom: 25px; font-size: 13.5px;">
-          <table width="100%">
-            <tr><td style="color: #64748b; font-weight: 600;" width="80">Doctor:</td><td style="color: #334155;">Dr. ${doctorName}</td></tr>
-            <tr><td style="color: #64748b; font-weight: 600;">Date:</td><td style="color: #334155;">${date}</td></tr>
-            <tr><td style="color: #64748b; font-weight: 600;">Time:</td><td style="color: #334155;">${time}</td></tr>
-          </table>
-        </div>
+    ${getEmailHeader("Consultation Summary", "#3b82f6", "#eff6ff")}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Visit Summary Available</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi <strong>${patientName}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">Your consultation with <strong>Dr. ${doctorName}</strong> on ${date} is complete. Your records have been securely updated.</p>
+    
+    <h3 style="color: #111827; font-size: 16px; font-weight: 700; margin: 0 0 12px 0;">📝 Clinical Notes</h3>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+          <p style="margin: 0; font-size: 14px; color: #374151; font-style: italic; line-height: 1.6;">${clinicalNotes ? clinicalNotes : "No specific clinical notes were recorded for this visit."}</p>
+        </td>
+      </tr>
+    </table>
 
-        <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin: 20px 0 10px 0;">📝 Clinical Notes</h3>
-        <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #e9d5ff; border-radius: 16px; padding: 20px; font-size: 14px; color: #581c87; font-style: italic; line-height: 1.6; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
-          ${clinicalNotes || "No clinical findings recorded."}
-        </div>
+    ${rxHtml}
+    ${labsHtml}
 
-        ${rxHtml}
-        ${labsHtml}
-
-        <div style="text-align: center; margin: 30px 0 10px 0;">
-          <a href="http://localhost:5173/login" class="animated-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: #ffffff; padding: 14px 32px; border-radius: 14px; text-decoration: none; font-size: 14.5px; font-weight: 700; display: inline-block; box-shadow: 0 5px 15px rgba(8, 145, 178, 0.25);">View Records in Vault</a>
-        </div>
-      </td>
-    </tr>
+    <!-- Action Button -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 35px;">
+      <tr>
+        <td align="center">
+          <a href="https://medichain-frontend-rose.vercel.app/login" class="btn" style="background-color: #3b82f6; color: #ffffff; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600; display: inline-block;">Access Full Vault</a>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
 
 export function getDoctorAppointmentAlertTemplate(doctorName, patientName, date, time, reason) {
   return `
-    ${getEmailHeader("New Appointment Alert", "#4f46e5", "#6366f1", "#4f46e5")}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0; color: #4f46e5;">New Booking Request Received</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>Dr. ${doctorName}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">A new patient appointment request has been scheduled in your system. Please review the patient and scheduling details below to confirm the appointment.</p>
-        
-        <div style="background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%); border: 1px solid #ddd6fe; border-radius: 20px; padding: 25px; margin-bottom: 25px;">
-          <h3 style="color: #5b21b6; font-size: 15px; font-weight: 700; margin: 0 0 15px 0; border-bottom: 1px solid rgba(79, 70, 229, 0.15); padding-bottom: 10px;">Patient Appointment Details</h3>
-          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 14px; color: #2e1065;">
+    ${getEmailHeader("New Appointment Alert", "#8b5cf6", "#f5f3ff")}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">New Patient Booking</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi <strong>Dr. ${doctorName}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">A patient has requested a new appointment. Please review the details below to confirm or decline.</p>
+    
+    <!-- Details Table -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+      <tr>
+        <td style="background-color: #f9fafb; padding: 16px 20px; border-bottom: 1px solid #e5e7eb;">
+          <h3 style="margin: 0; color: #374151; font-size: 15px; font-weight: 600;">Booking Details</h3>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px;">
+          <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; color: #4b5563;">
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;" width="100">Patient:</td>
-              <td style="padding: 6px 0;">${patientName}</td>
+              <td class="responsive-block responsive-block-label" width="100" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Patient</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${patientName}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Date:</td>
-              <td style="padding: 6px 0;">${date}</td>
+              <td class="responsive-block responsive-block-label" width="100" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Date</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${date}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Time:</td>
-              <td style="padding: 6px 0;">${time}</td>
+              <td class="responsive-block responsive-block-label" width="100" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Time</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${time}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600; vertical-align: top;">Reason:</td>
-              <td style="padding: 6px 0; line-height: 1.4;">${reason}</td>
+              <td class="responsive-block responsive-block-label" width="100" valign="top" style="color: #6b7280; font-weight: 500;">Reason</td>
+              <td class="responsive-block responsive-block-value" valign="top" style="line-height: 1.5;">${reason}</td>
             </tr>
           </table>
-        </div>
-        
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:5173/login" class="animated-btn" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; padding: 14px 32px; border-radius: 14px; text-decoration: none; font-size: 14.5px; font-weight: 700; display: inline-block; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.25);">Manage Booking</a>
-        </div>
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Action Button -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 30px;">
+      <tr>
+        <td align="center">
+          <a href="https://medichain-frontend-rose.vercel.app/login" class="btn" style="background-color: #8b5cf6; color: #ffffff; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600; display: inline-block;">Manage Bookings</a>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
@@ -375,55 +467,65 @@ export function getGenericStatusUpdateTemplate(patientName, doctorName, status, 
   const isConfirmed = status.toLowerCase() === "confirmed";
   const isCancelled = status.toLowerCase() === "cancelled";
   
-  let accentColor = "#0891b2";
-  let themeBg = "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)";
-  let themeBorder = "#e2e8f0";
-  let textColor = "#334155";
+  let accentColor = "#3b82f6";
+  let noticeBg = "#eff6ff";
+  let noticeBorder = "#bfdbfe";
+  let noticeText = "#1e3a8a";
   
   if (isConfirmed) {
-    accentColor = "#059669";
-    themeBg = "linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%)";
-    themeBorder = "#a7f3d0";
-    textColor = "#064e3b";
+    accentColor = "#10b981";
+    noticeBg = "#ecfdf5";
+    noticeBorder = "#a7f3d0";
+    noticeText = "#064e3b";
   } else if (isCancelled) {
-    accentColor = "#e11d48";
-    themeBg = "linear-gradient(180deg, #fff5f5 0%, #ffe3e3 100%)";
-    themeBorder = "#fed7d7";
-    textColor = "#742a2a";
+    accentColor = "#ef4444";
+    noticeBg = "#fef2f2";
+    noticeBorder = "#fecaca";
+    noticeText = "#991b1b";
   }
 
   return `
-    ${getEmailHeader(`Appointment Update: ${status}`, accentColor, accentColor, accentColor)}
-    <!-- Body Content -->
-    <tr>
-      <td class="animated-card" style="padding: 40px 40px 35px 40px;">
-        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0;">Appointment Status Update</h2>
-        <p style="color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">Hello <strong>${patientName}</strong>,</p>
-        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">Your appointment status with <strong>Dr. ${doctorName}</strong> has been updated to <strong>${status.toUpperCase()}</strong>.</p>
-        
-        <div style="background: ${themeBg}; border: 1px solid ${themeBorder}; border-radius: 20px; padding: 25px; margin-bottom: 25px;">
-          <h3 style="color: ${accentColor}; font-size: 15px; font-weight: 700; margin: 0 0 15px 0; border-bottom: 1px solid ${themeBorder}; padding-bottom: 10px;">Details</h3>
-          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 14px; color: ${textColor};">
+    ${getEmailHeader(`Appointment Update: ${status.toUpperCase()}`, accentColor, noticeBg)}
+    
+    <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Status Update</h2>
+    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">Hi <strong>${patientName}</strong>,</p>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">Your appointment status with <strong>Dr. ${doctorName}</strong> has been updated.</p>
+    
+    <!-- Status Notice -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+      <tr>
+        <td align="center" style="background-color: ${noticeBg}; border: 1px solid ${noticeBorder}; padding: 16px; border-radius: 8px;">
+          <p style="color: ${noticeText}; font-size: 16px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 1px;">${status}</p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Details Table -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+      <tr>
+        <td style="background-color: #f9fafb; padding: 16px 20px; border-bottom: 1px solid #e5e7eb;">
+          <h3 style="margin: 0; color: #374151; font-size: 15px; font-weight: 600;">Appointment Details</h3>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px;">
+          <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; color: #4b5563;">
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;" width="100">Doctor:</td>
-              <td style="padding: 6px 0;">Dr. ${doctorName}</td>
+              <td class="responsive-block responsive-block-label" width="100" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Doctor</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">Dr. ${doctorName}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Date:</td>
-              <td style="padding: 6px 0;">${date}</td>
+              <td class="responsive-block responsive-block-label" width="100" style="padding-bottom: 12px; color: #6b7280; font-weight: 500;">Date</td>
+              <td class="responsive-block responsive-block-value" style="padding-bottom: 12px; font-weight: 600; color: #111827;">${date}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Time:</td>
-              <td style="padding: 6px 0;">${time}</td>
-            </tr>
-            <tr>
-              <td style="padding: 6px 0; font-weight: 600;">Status:</td>
-              <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase;">${status}</td>
+              <td class="responsive-block responsive-block-label" width="100" style="color: #6b7280; font-weight: 500;">Time</td>
+              <td class="responsive-block responsive-block-value" style="font-weight: 600; color: #111827;">${time}</td>
             </tr>
           </table>
-        </div>
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </table>
     ${getEmailFooter()}
   `;
 }
