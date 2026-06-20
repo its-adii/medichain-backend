@@ -6,7 +6,9 @@ import {
   getAppointmentRequestTemplate,
   getAppointmentConfirmedTemplate,
   getAppointmentCancelledTemplate,
-  getConsultationCompletedTemplate
+  getConsultationCompletedTemplate,
+  getDoctorAppointmentAlertTemplate,
+  getGenericStatusUpdateTemplate
 } from "../services/emailTemplates.js";
 
 export async function bookAppointment(req, res) {
@@ -79,28 +81,14 @@ export async function bookAppointment(req, res) {
     if (doctor.user && doctor.user.email) {
       await sendEmail({
         to: doctor.user.email,
-        subject: "New Appointment Booked - MediChain",
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #e2e8f0; border-radius: 20px; background-color: #ffffff;">
-            <div style="text-align: center; margin-bottom: 20px;">
-              <h1 style="color: #0891b2; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">MediChain</h1>
-              <p style="color: #64748b; font-size: 12px; margin: 5px 0 0 0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Secure Medical Registry</p>
-            </div>
-            <hr style="border: 0; border-top: 1px solid #f1f5f9; margin-bottom: 25px;" />
-            <h2 style="color: #0891b2; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 10px;">New Appointment Booked</h2>
-            <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">Hello <strong>Dr. ${doctor.user.name}</strong>,</p>
-            <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 25px 0;">A new appointment has been scheduled with you by patient <strong>${req.user.name}</strong>.</p>
-            <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 16px; padding: 20px; margin-bottom: 25px;">
-              <p style="margin: 0 0 10px 0; color: #334155; font-size: 14px;"><strong>Patient:</strong> ${req.user.name}</p>
-              <p style="margin: 0 0 10px 0; color: #334155; font-size: 14px;"><strong>Date:</strong> ${formattedDate}</p>
-              <p style="margin: 0 0 10px 0; color: #334155; font-size: 14px;"><strong>Time:</strong> ${time}</p>
-              <p style="margin: 0; color: #334155; font-size: 14px;"><strong>Reason:</strong> ${reason}</p>
-            </div>
-            <p style="color: #64748b; font-size: 12px; line-height: 1.5; margin: 25px 0 0 0;">Please review and update the status of this booking in your doctor dashboard.</p>
-            <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 25px 0;" />
-            <p style="color: #94a3b8; font-size: 11px; text-align: center; margin: 0;">&copy; ${new Date().getFullYear()} MediChain. All rights reserved.</p>
-          </div>
-        `
+        subject: "New Appointment Request - MediChain",
+        html: getDoctorAppointmentAlertTemplate(
+          doctor.user.name,
+          req.user.name,
+          formattedDate,
+          time,
+          reason
+        )
       });
     }
 
@@ -316,23 +304,13 @@ export async function updateAppointmentStatus(req, res) {
             );
           } else {
             // Fallback generic status update template
-            htmlContent = `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #e2e8f0; border-radius: 20px; background-color: #ffffff;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                  <h1 style="color: #0891b2; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">MediChain</h1>
-                  <p style="color: #64748b; font-size: 12px; margin: 5px 0 0 0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Secure Medical Registry</p>
-                </div>
-                <hr style="border: 0; border-top: 1px solid #f1f5f9; margin-bottom: 25px;" />
-                <h2 style="color: #0891b2; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 10px;">Appointment Status Update</h2>
-                <p>Hello <strong>${appointment.patient.name || ""}</strong>,</p>
-                <p>Your appointment with <strong>Dr. ${doctorName}</strong> has been updated to <strong>${currentStatus.toUpperCase()}</strong>.</p>
-                <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
-                <p><strong>Date:</strong> ${formattedDate}</p>
-                <p><strong>Time:</strong> ${appointment.time || "N/A"}</p>
-                <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
-                <p style="font-size: 12px; color: #64748b;">Please sign into your MediChain dashboard to view your schedule details.</p>
-              </div>
-            `;
+            htmlContent = getGenericStatusUpdateTemplate(
+              appointment.patient.name,
+              doctorName,
+              currentStatus,
+              formattedDate,
+              appointment.time || "N/A"
+            );
           }
 
           await sendEmail({

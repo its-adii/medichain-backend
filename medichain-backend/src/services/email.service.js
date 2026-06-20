@@ -1,81 +1,46 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-let transporter;
+let resend;
 
-async function getTransporter() {
-  if (transporter) return transporter;
+function getResendClient() {
+  if (resend) return resend;
 
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT || 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-
-  if (smtpHost && smtpUser && smtpPass) {
-    const isGmail = smtpHost.toLowerCase().includes("gmail");
-    transporter = nodemailer.createTransport(
-      isGmail
-        ? {
-            service: "gmail",
-            auth: {
-              user: smtpUser,
-              pass: smtpPass,
-            },
-          }
-        : {
-            host: smtpHost,
-            port: parseInt(smtpPort),
-            secure: smtpPort == 465,
-            auth: {
-              user: smtpUser,
-              pass: smtpPass,
-            },
-            tls: {
-              // Do not fail on invalid certificates (optional helper but good for robustness)
-              rejectUnauthorized: false
-            }
-          }
-    );
-  } else {
-    console.log("No SMTP credentials found in env. Generating Ethereal test email account...");
-    try {
-      const testAccount = await nodemailer.createTestAccount();
-      transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
-      console.log(`Ethereal email configured. User: ${testAccount.user}`);
-    } catch (err) {
-      console.error("Failed to generate Ethereal account, email service disabled.", err.message);
-    }
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.warn("WARNING: RESEND_API_KEY is not defined in the environment variables. Email service is disabled or will fail.");
+    return null;
   }
 
-  return transporter;
+  resend = new Resend(resendApiKey);
+  return resend;
 }
 
 export async function sendEmail({ to, subject, text, html }) {
   try {
-    const client = await getTransporter();
-    if (!client) return;
+    const client = getResendClient();
+    if (!client) {
+      console.warn("Skipping email send: Resend is not configured (missing API key).");
+      return;
+    }
 
-    const info = await client.sendMail({
-      from: `"MediChain" <${process.env.SMTP_USER || "noreply@medichain.com"}>`,
+    const from = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+
+    const response = await client.emails.send({
+      from,
       to,
       subject,
       text,
       html,
     });
-    console.log(`Message sent: ${info.messageId}`);
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    if (previewUrl) {
-      console.log(`Preview URL: ${previewUrl}`);
+
+    if (response.error) {
+      console.error("Email sending failed via Resend API error:", response.error);
+      return response;
     }
-    return info;
+
+    console.log(`Message sent via Resend. ID: ${response.data?.id}`);
+    return response.data;
   } catch (error) {
-    console.error("Email sending failed:", error);
+    console.error("Email sending failed via Resend catch block:", error);
   }
 }
