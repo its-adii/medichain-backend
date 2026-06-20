@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
 import dns from "dns";
+import { promisify } from "util";
+
+const resolve4 = promisify(dns.resolve4);
 
 let transporter;
 
@@ -14,8 +17,20 @@ async function getTransporter() {
   console.log(`[SMTP Config] Connecting to ${smtpHost}:${smtpPort} as ${smtpUser} (Strict IPv4 Lookup)`);
 
   if (smtpHost && smtpUser && smtpPass) {
+    let hostIp = smtpHost;
+    
+    try {
+      const addresses = await resolve4(smtpHost);
+      if (addresses && addresses.length > 0) {
+        hostIp = addresses[0];
+        console.log(`[SMTP Config] Resolved ${smtpHost} to IPv4: ${hostIp}`);
+      }
+    } catch (err) {
+      console.warn(`[SMTP Config] Failed to resolve IPv4 for ${smtpHost}. Error:`, err.message);
+    }
+
     transporter = nodemailer.createTransport({
-      host: smtpHost,
+      host: hostIp,
       port: parseInt(smtpPort),
       secure: parseInt(smtpPort) === 465, // true for 465, false for 587
       auth: {
@@ -23,12 +38,8 @@ async function getTransporter() {
         pass: smtpPass,
       },
       tls: {
-        rejectUnauthorized: false
-      },
-      // Force Nodemailer to strictly resolve hostnames to IPv4 (Family 4)
-      // This bypasses the lack of IPv6 outbound routing on Render containers
-      lookup: (hostname, options, callback) => {
-        return dns.lookup(hostname, { family: 4 }, callback);
+        rejectUnauthorized: false,
+        servername: smtpHost // Required so TLS doesn't fail when connecting via IP
       },
       connectionTimeout: 10000, // 10s connection timeout
       greetingTimeout: 10000,
