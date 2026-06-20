@@ -65,7 +65,7 @@ export async function bookAppointment(req, res) {
       : date || "N/A";
 
     // 1. Patient Pending Request Email
-    await sendEmail({
+    sendEmail({
       to: patientUser.email,
       subject: "Appointment Requested (Pending) - MediChain",
       html: getAppointmentRequestTemplate(
@@ -79,7 +79,7 @@ export async function bookAppointment(req, res) {
 
     // 2. Doctor Alert
     if (doctor.user && doctor.user.email) {
-      await sendEmail({
+      sendEmail({
         to: doctor.user.email,
         subject: "New Appointment Request - MediChain",
         html: getDoctorAppointmentAlertTemplate(
@@ -220,7 +220,7 @@ export async function updateAppointmentStatus(req, res) {
 
         // Email Alert to Doctor
         if (doctor.user.email) {
-          await sendEmail({
+          sendEmail({
             to: doctor.user.email,
             subject: "Appointment Cancelled by Patient - MediChain",
             html: getAppointmentCancelledTemplate(
@@ -235,7 +235,7 @@ export async function updateAppointmentStatus(req, res) {
 
         // Email Alert to Patient (Self Confirmation)
         if (req.user.email) {
-          await sendEmail({
+          sendEmail({
             to: req.user.email,
             subject: "Appointment Cancelled - MediChain",
             html: getAppointmentCancelledTemplate(
@@ -313,7 +313,7 @@ export async function updateAppointmentStatus(req, res) {
             );
           }
 
-          await sendEmail({
+          sendEmail({
             to: appointment.patient.email,
             subject,
             html: htmlContent
@@ -330,7 +330,7 @@ export async function updateAppointmentStatus(req, res) {
               year: "numeric"
             }) : "N/A";
 
-            await sendEmail({
+            sendEmail({
               to: doctorEmail,
               subject: "Appointment Cancelled by Admin - MediChain",
               html: getAppointmentCancelledTemplate(

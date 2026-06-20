@@ -59,7 +59,7 @@ export async function register(req, res) {
     }
 
     // Send Verification Email
-    await sendEmail({
+    sendEmail({
       to: user.email,
       subject: "Verify your email address - MediChain",
       html: getVerificationEmailTemplate(user.name, verificationOtp),
@@ -498,7 +498,7 @@ export async function googleLogin(req, res) {
       });
 
       // Send Welcome Email
-      await sendEmail({
+      sendEmail({
         to: user.email,
         subject: "Welcome to MediChain - Account Confirmed",
         html: getWelcomeEmailTemplate(user.name, user.role),
@@ -590,7 +590,7 @@ export async function verifyEmail(req, res) {
     await user.save();
 
     // Send Welcome Email
-    await sendEmail({
+    sendEmail({
       to: user.email,
       subject: "Welcome to MediChain - Account Verified",
       html: getWelcomeEmailTemplate(user.name, user.role),
@@ -635,7 +635,7 @@ export async function resendVerificationOtp(req, res) {
     await user.save();
 
     // Send email
-    await sendEmail({
+    sendEmail({
       to: user.email,
       subject: "Verify your email address - MediChain",
       html: getVerificationEmailTemplate(user.name, verificationOtp),
@@ -669,7 +669,7 @@ export async function forgotPassword(req, res) {
     await user.save();
 
     // Send email
-    await sendEmail({
+    sendEmail({
       to: user.email,
       subject: "Reset your password - MediChain",
       html: getPasswordResetEmailTemplate(user.name, resetOtp),
